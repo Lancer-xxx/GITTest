@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yihuisoft.authoritybiz.mapper.features.FeaturesMapper">
+    <resultMap id="BaseResultMap" type="com.yihuisoft.authoritybiz.entity.features.Features">
+        <id column="ID" jdbcType="DECIMAL" property="id" />
+        <result column="FUNC_CODE" jdbcType="VARCHAR" property="funcCode" />
+        <result column="FUNC_NAME" jdbcType="VARCHAR" property="funcName" />
+        <result column="FUNC_DESC" jdbcType="VARCHAR" property="funcDesc" />
+        <result column="MENU_ID" jdbcType="DECIMAL" property="menuId" />
+        <result column="FUNC_ORDER" jdbcType="VARCHAR" property="funcOrder" />
+        <result column="STATUS" jdbcType="VARCHAR" property="status" />
+        <result column="CREATE_USERID" jdbcType="DECIMAL" property="createUserid" />
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="UPDATE_USERID" jdbcType="DECIMAL" property="updateUserid" />
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+
+        <result column="MENU_NAME" jdbcType="VARCHAR" property="menuName" />
+        <result column="SYS_NAME" jdbcType="VARCHAR" property="sysName" />
+        <result column="FUNCTION_URL" jdbcType="VARCHAR" property="functionUrl" />
+    </resultMap>
+
+    <resultMap id="BaseRoleFuncMap" type="com.yihuisoft.authoritybiz.entity.features.RoleFeatures">
+        <result column="ID" jdbcType="DECIMAL" property="id" />
+        <result column="ROLE_ID" jdbcType="DECIMAL" property="roleId"/>
+        <result column="FUNC_ID" jdbcType="DECIMAL" property="funcId" />
+        <result column="FUNC_NAME" jdbcType="VARCHAR" property="funcName" />
+        <result column="MENU_ID" jdbcType="DECIMAL" property="menuId" />
+        <result column="STATUS" jdbcType="VARCHAR" property="status" />
+        <result column="CREATE_USERID" jdbcType="DECIMAL" property="createUserid" />
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="UPDATE_USERID" jdbcType="DECIMAL" property="updateUserid" />
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    ID, FUNC_CODE, FUNC_NAME,FUNC_DESC, MENU_ID, FUNC_ORDER,STATUS, CREATE_USERID, CREATE_TIME, UPDATE_USERID,
+    UPDATE_TIME, FUNCTION_URL
+  </sql>
+    <select id="listFeaturesByMenuUrlAndRoleId" parameterType="com.yihuisoft.authoritybiz.entity.features.RoleFeatures" resultMap="BaseResultMap">
+      select A.* from T_SYS_FUNCTION A join T_SYS_MENU_INF B on A.MENU_ID=B.ID  join T_SYS_INF C
+      on B.sys_id =C.id where B.menu_url=#{menuUrl} and A.id in (select func_id from T_SYS_ROLE_FUNCTION
+      where role_id=#{roleId} and A.STATUS='1')
+  </select>
+    <select id="listRoleFeatures" parameterType="java.lang.Long" resultMap="BaseRoleFuncMap">
+        select * from T_SYS_ROLE_FUNCTION where 1=1
+        <if test="funcId != null">
+            AND func_id = #{funcId,jdbcType=DECIMAL}
+        </if>
+    </select>
+    <update id="updateFeatures" parameterType="com.yihuisoft.authoritybiz.entity.features.Features">
+        update T_SYS_FUNCTION
+        <set>
+            <if test="funcName != null">
+                FUNC_NAME = #{funcName,jdbcType=VARCHAR},
+            </if>
+            <if test="funcDesc != null">
+                FUNC_DESC = #{funcDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="menuId != null">
+                MENU_ID = #{menuId,jdbcType=DECIMAL},
+            </if>
+            <if test="funcOrder != null">
+                FUNC_ORDER = #{funcOrder,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                STATUS = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUserid != null">
+                UPDATE_USERID = #{updateUserid,jdbcType=DECIMAL},
+            </if>
+            UPDATE_TIME =sysdate
+        </set>
+        where ID = #{id,jdbcType=DECIMAL}
+    </update>
+    <insert id="saveFeatures" parameterType="com.yihuisoft.authoritybiz.entity.features.Features"  useGeneratedKeys="true" keyProperty="id" databaseId="oracle">
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="BEFORE">
+            select SEQ_SYS_FUNCTION_ID.nextval as id from dual
+        </selectKey>
+        insert into T_SYS_FUNCTION
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            ID,
+            FUNC_CODE,
+            <if test="funcName != null">
+                FUNC_NAME,
+            </if>
+            <if test="funcDesc != null">
+                FUNC_DESC,
+            </if>
+            <if test="menuId != null">
+                MENU_ID,
+            </if>
+            <if test="funcOrder != null">
+                FUNC_ORDER,
+            </if>
+            <if test="status != null">
+                STATUS ,
+            </if>
+            <if test="createUserid != null">
+                CREATE_USERID,
+            </if>
+            CREATE_TIME,
+            UPDATE_TIME,
+            <if test="updateUserid != null">
+                UPDATE_USERID
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{id},
+            #{id},
+            <if test="funcName != null">
+                #{funcName,jdbcType=VARCHAR},
+            </if>
+            <if test="funcDesc != null">
+                #{funcDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="menuId != null">
+                #{menuId,jdbcType=DECIMAL},
+            </if>
+            <if test="funcOrder != null">
+                #{funcOrder,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="createUserid != null">
+                #{createUserid,jdbcType=DECIMAL},
+            </if>
+            sysdate,
+            sysdate,
+            <if test="updateUserid != null">
+                #{updateUserid,jdbcType=DECIMAL}
+            </if>
+        </trim>
+    </insert>
+    <delete id="deleteFeatures" parameterType="java.lang.Long">
+    delete from T_SYS_FUNCTION
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+    <select id="list" parameterType="com.yihuisoft.authoritybiz.entity.features.Features" resultMap="BaseResultMap">
+        select * from  T_SYS_FUNCTION
+        <where>
+            <if test="menuId != null and menuId != ''">
+                AND menu_id = #{menuId,jdbcType=DECIMAL}
+            </if>
+            <if test="status != null and status != ''">
+                AND STATUS = #{status}
+            </if>
+            <if test="funcName != null and funcName != ''">
+                AND FUNC_NAME = #{funcName,jdbcType=VARCHAR}
+            </if>
+            AND PARENT_ID is NULL
+        </where>
+    </select>
+    <select id="listFeatures" parameterType="com.yihuisoft.authoritybiz.entity.features.Features" resultMap="BaseResultMap">
+        select A.*,B.MENU_NAME,C.SYS_NAME from T_SYS_FUNCTION A
+        join T_SYS_MENU_INF B on A.MENU_ID=B.ID
+        join T_SYS_INF C on B.sys_id =C.id
+        <where>
+            <if test="id!=null and id!= ''">
+                AND A.ID= #{id,jdbcType=DECIMAL}
+            </if>
+            <if test="funcName!=null and funcName!= ''">
+                AND A.FUNC_NAME LIKE  '%'||#{funcName}||'%'
+            </if>
+            <if test="status!=null and status!= ''">
+                AND A.STATUS= #{status,jdbcType=DECIMAL}
+            </if>
+            <if test="menuName!=null and menuName!= ''">
+                AND B.MENU_NAME LIKE  '%'||#{menuName}||'%'
+            </if>
+            <if test="sysName!=null and sysName!= ''">
+                AND C.SYS_NAME LIKE  '%'||#{sysName}||'%'
+            </if>
+        </where>
+        ORDER BY A.ID DESC
+    </select>
+    <delete id="deleteRoleFeatures" parameterType="java.lang.Long">
+    delete from  T_SYS_ROLE_FUNCTION where role_id=#{roleId,jdbcType=DECIMAL}
+  </delete>
+    <insert id="saveRoleFeatures" parameterType="com.yihuisoft.authoritybiz.entity.features.RoleFeatures" databaseId="oracle">
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="BEFORE">
+            select SEQ_SYS_ROLE_FUNCTION_ID.nextval from dual
+        </selectKey>
+        insert into T_SYS_ROLE_FUNCTION(id,role_id,func_id,update_userid,update_time)
+        values(SEQ_SYS_ROLE_FUNCTION_ID.nextval,#{roleId},#{funcId},#{userId},sysdate)
+    </insert>
+    <select id="listRoleMenuFeatures" parameterType="com.yihuisoft.authoritybiz.entity.features.Features" resultMap="BaseRoleFuncMap">
+      select A.*,B.FUNC_NAME,B.MENU_ID from T_SYS_ROLE_FUNCTION A
+      join T_SYS_FUNCTION B on A.FUNC_ID =B.ID where A.role_id = #{roleId,jdbcType=DECIMAL}
+  </select>
+    <select id="listRoleFeaturesByRoleId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        T_SYS_FUNCTION
+        WHERE
+        MENU_ID IN (
+            SELECT
+            MENU_ID
+            FROM
+            T_SYS_ROLE_MENU
+            WHERE 1=1
+            <if test="roleId != null">
+                AND ROLE_ID = #{roleId}
+            </if>
+        )
+        AND IS_DELETED = 0
+        and STATUS = 1
+  </select>
+    <delete id="deleteRoleFuncByRoleId">
+    delete from  T_SYS_ROLE_FUNCTION where role_id=#{roleId,jdbcType=DECIMAL}
+  </delete>
+    <delete id="deleteRoleFuncByMenuId">
+    delete from  T_SYS_ROLE_FUNCTION where role_id=#{roleId,jdbcType=DECIMAL}
+    and func_id = #{funcId,jdbcType=DECIMAL}
+  </delete>
+    <select id="listByParentId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from  T_SYS_FUNCTION
+        WHERE PARENT_ID = #{parentId}
+    </select>
+</mapper>

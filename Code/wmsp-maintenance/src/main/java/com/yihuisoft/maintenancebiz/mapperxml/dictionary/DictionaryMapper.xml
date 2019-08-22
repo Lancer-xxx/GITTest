@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yihuisoft.maintenancebiz.mapper.dictionary.DictionaryMapper">
+    <resultMap id="BaseResultMap" type="com.yihuisoft.maintenancebiz.entity.dictionary.Dictionary">
+        <id column="ID" jdbcType="DECIMAL" property="id"/>
+        <result column="DICT_TYPE_CODE" jdbcType="DECIMAL" property="dictTypeCode"/>
+        <result column="DICT_NAME" jdbcType="VARCHAR" property="dictName"/>
+        <result column="DICT_VALUE" jdbcType="VARCHAR" property="dictValue"/>
+        <result column="DICT_ORDER" jdbcType="VARCHAR" property="dictOrder"/>
+        <result column="STATUS" jdbcType="VARCHAR" property="status"/>
+        <result column="CREATE_USERID" jdbcType="DECIMAL" property="createUserid"/>
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="UPDATE_USERID" jdbcType="DECIMAL" property="updateUserid"/>
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="DESCRIPTION" jdbcType="VARCHAR" property="description"/>
+    </resultMap>
+    <sql id="list_Dictionary_Select">
+       DICT_TYPE_CODE, DICT_NAME, DICT_VALUE,DICT_ORDER,STATUS
+    </sql>
+    <sql id="list_Dictionarys">
+        ID,DICT_TYPE_CODE,DICT_NAME,DICT_VALUE,DICT_ORDER,STATUS,CREATE_USERID,CREATE_TIME,UPDATE_USERID,UPDATE_TIME,DESCRIPTION,DICT_TYPE_NAME
+    </sql>
+    <!--校验字典项名称/标识是否重复-->
+    <select id="checkParamExists" parameterType="com.yihuisoft.maintenancebiz.entity.dictionary.Dictionary" resultMap="BaseResultMap">
+        select ID from T_SYS_DICT
+        <where>
+            DICT_TYPE_CODE = #{dictTypeCode}
+            <if test="dictName != null and dictName !=''">
+                and  DICT_NAME = #{dictName}
+            </if>
+            <if test="dictValue != null and dictValue != ''">
+                and DICT_VALUE = #{dictValue}
+            </if>
+            <if test="status != null and status != ''">
+                and STATUS = #{status}
+            </if>
+            <!--更新字典项信息时，ID和修改数据不通也是重复-->
+            <if test="id != null and id != ''">
+                and ID != #{id}
+            </if>
+        </where>
+    </select>
+    <!--字典管理-字典项信息列别展示-->
+    <select id="listDictionary" parameterType="com.yihuisoft.maintenancebiz.entity.dictionary.Dictionary" resultType="com.yihuisoft.maintenancebiz.entity.dictionary.DictionaryListDO">
+        select d.ID,d.DICT_TYPE_CODE,d.DICT_NAME,d.DICT_VALUE,d.DICT_ORDER,d.STATUS,d.CREATE_USERID,d.CREATE_TIME,d.UPDATE_USERID,d.UPDATE_TIME,d.DESCRIPTION ,dt.DICT_TYPE_NAME dict_type_name from T_SYS_DICT d
+        left join T_SYS_DICT_TYPE dt on d.DICT_TYPE_CODE = dt.DICT_TYPE_CODE
+        <where>
+            1 = 1
+            <if test="dictTypeCode != null and dictTypeCode != ''">
+                and d.DICT_TYPE_CODE = #{dictTypeCode}
+            </if>
+            <if test="dictValue != null and dictValue != ''">
+                and d.DICT_VALUE LIKE  '%'||#{dictValue}||'%'
+            </if>
+            <if test="status != null and status != ''">
+                and d.STATUS = #{status}
+            </if>
+            <if test="dictName != null and dictName != ''">
+                and d.DICT_NAME LIKE  '%'||#{dictName}||'%'
+            </if>
+            order by d.DICT_ORDER asc ,d.UPDATE_TIME asc
+        </where>
+    </select>
+    <!--前端下拉框调用字典数据接口-->
+    <select id="listDictionarySelect" parameterType="com.yihuisoft.maintenancebiz.entity.dictionary.Dictionary" resultType="com.yihuisoft.maintenancebiz.entity.dictionary.DictionaryListSelectDO">
+        select 
+        <include refid="list_Dictionary_Select"></include>
+        from T_SYS_DICT
+        <where>
+            <!--
+            前端下拉列表不展示禁用状态的字典项
+            STATUS：1：禁用，2：启用
+            -->
+            STATUS = 2
+            <if test="dictTypeCode != null and dictTypeCode != ''">
+                and DICT_TYPE_CODE = #{dictTypeCode}
+            </if>
+        </where>
+        order by DICT_ORDER asc
+    </select>
+</mapper>

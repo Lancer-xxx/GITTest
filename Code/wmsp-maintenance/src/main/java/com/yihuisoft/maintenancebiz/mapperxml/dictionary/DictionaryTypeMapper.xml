@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yihuisoft.maintenancebiz.mapper.dictionary.DictionaryTypeMapper">
+    <resultMap id="BaseResultMap" type="com.yihuisoft.maintenancebiz.entity.dictionary.DictionaryType">
+        <id column="ID" jdbcType="DECIMAL" property="id"/>
+        <result column="DICT_TYPE_NAME" jdbcType="VARCHAR" property="dictTypeName"/>
+        <result column="DICT_TYPE_CODE" jdbcType="VARCHAR" property="dictTypeCode"/>
+        <result column="CREATE_USERID" jdbcType="DECIMAL" property="createUserid"/>
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="UPDATE_USERID" jdbcType="DECIMAL" property="updateUserid"/>
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="DESCRIPTION" jdbcType="VARCHAR" property="description"/>
+        <result column="MENU_ID" jdbcType="DECIMAL" property="menuId"/>
+    </resultMap>
+    <select id="listDictionaryTypes" parameterType="com.yihuisoft.maintenancebiz.entity.dictionary.DictionaryType" resultType="com.yihuisoft.maintenancebiz.entity.dictionary.DictionaryTypeListDO">
+        SELECT dt.ID,dt.DICT_TYPE_NAME,dt.DICT_TYPE_CODE,dt.CREATE_USERID,dt.CREATE_TIME,dt.UPDATE_USERID,dt.UPDATE_TIME,dt.DESCRIPTION,dt.MENU_ID,nvl(menu.menu_name,'公用字典') MENU_NAME,nvl(count(d.id),0) DICTS
+        FROM T_SYS_DICT_TYPE dt
+        left join T_SYS_MENU_INF menu on dt.MENU_ID = menu.id
+        left join T_SYS_DICT d on d.DICT_TYPE_CODE = dt.DICT_TYPE_CODE
+        <where>
+            1 = 1
+            <if test="dictTypeName != null and dictTypeName != ''">
+                and dt.DICT_TYPE_NAME LIKE  '%'||#{dictTypeName}||'%'
+            </if>
+            <if test="dictTypeCode != null and dictTypeCode != ''">
+                and dt.DICT_TYPE_CODE LIKE  '%'||#{dictTypeCode}||'%'
+            </if>
+            <if test="menuId != null and menuId != ''">
+                and dt.MENU_ID = #{menuId}
+                <!--
+                当字典所属菜单被删除时，字典项归入到公用字典
+                MENU_TYPE:0：模块 1：根菜单 2：子菜单 3：功能'
+                -->
+                <if test="menuId == 1">
+                    or dt.MENU_ID not in (
+                    <!--获取第一/二层展示菜单-->
+                    SELECT id FROM T_SYS_MENU_INF WHERE IS_DELETED = 0
+                    AND MENU_STATUS = 1
+                    AND ( MENU_TYPE = '0' OR PARENT_ID IN ( SELECT "ID" FROM T_SYS_MENU_INF WHERE IS_DELETED = 0 AND MENU_STATUS = 1 AND PARENT_ID = 0))
+                    )
+                </if>
+            </if>
+        </where>
+        group by dt.ID, dt.DICT_TYPE_NAME, dt.DICT_TYPE_CODE, dt.CREATE_USERID, dt.CREATE_TIME,dt.UPDATE_USERID, dt.UPDATE_TIME, dt.DESCRIPTION, dt.MENU_ID, nvl(menu.menu_name,'公用字典')
+        order by dt.UPDATE_TIME desc
+    </select>
+    <!--校验字典类别名称/标识是否重复-->
+    <select id="checkParamExists" parameterType="com.yihuisoft.maintenancebiz.entity.dictionary.DictionaryType" resultMap="BaseResultMap">
+        select ID from T_SYS_DICT_TYPE
+        <where>
+            <if test="dictTypeName != null and dictTypeName !=''">
+                and  DICT_TYPE_NAME = #{dictTypeName}
+            </if>
+            <if test="dictTypeCode != null and dictTypeCode != ''">
+                and DICT_TYPE_CODE = #{dictTypeCode}
+            </if>
+            <!--更新字典类别信息时，ID和修改数据不通也是重复-->
+            <if test="id != null">
+                and ID != #{id}
+            </if>
+        </where>
+    </select>
+</mapper>

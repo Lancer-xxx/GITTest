@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yihuisoft.authoritybiz.mapper.permission.DataPermissionMapper">
+    <resultMap id="BaseResultMap" type="com.yihuisoft.authoritybiz.entity.permission.DataPermission">
+        <id column="ID" jdbcType="DECIMAL" property="id" />
+        <result column="NAME" jdbcType="VARCHAR" property="name" />
+        <result column="TYPE" jdbcType="VARCHAR" property="type" />
+        <result column="STATUS" jdbcType="VARCHAR" property="status" />
+        <result column="IS_DELETED" jdbcType="VARCHAR" property="isDeleted" />
+        <result column="CREATE_USERID" jdbcType="DECIMAL" property="createUserId" />
+        <result column="CREATE_TIME" jdbcType="DATE" property="createTime" />
+        <result column="UPDATE_USERID" jdbcType="DECIMAL" property="updateUserId" />
+        <result column="UPDATE_TIME" jdbcType="DATE" property="updateTime" />
+        <result column="SUB_TYPE" jdbcType="VARCHAR" property="subType" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        ID, NAME, TYPE, STATUS, IS_DELETED, CREATE_USERID, CREATE_TIME,
+        UPDATE_USERID, UPDATE_TIME, SUB_TYPE
+    </sql>
+</mapper>

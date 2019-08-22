@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yihuisoft.maintenancebiz.mapper.screen.SystemScreenMapper">
+    <!-- 屏保：查询结果的 字段 和 属性的 映射关系-->
+    <resultMap id="BaseResultMap" type="com.yihuisoft.maintenancebiz.entity.screen.SystemScreen">
+        <id column="ID" jdbcType="DECIMAL" property="id"/>
+        <result column="FILE_NAME" jdbcType="VARCHAR" property="fileName"/>
+        <result column="FILE_ALIAS_NAME" jdbcType="VARCHAR" property="fileAliasName"/>
+        <result column="UPLOAD_TIME" jdbcType="TIMESTAMP" property="uploadTime"/>
+        <result column="UPLOAD_USER" jdbcType="VARCHAR" property="uploadUser"/>
+        <result column="STATUS" jdbcType="VARCHAR" property="status"/>
+        <result column="ORGN_NAME" jdbcType="VARCHAR" property="orgnName"/>
+        <result column="ORGN_CODE" jdbcType="VARCHAR" property="orgnCode"/>
+        <result column="OPT_ORGN_CODE" jdbcType="VARCHAR" property="optOrgnCode"/>
+        <result column="OPT_ORGN_LEVEL" jdbcType="VARCHAR" property="optOrgnLevel"/>
+        <result column="OPT_USER_CODE" jdbcType="VARCHAR" property="optUserCode"/>
+        <result column="UPDATE_USER" jdbcType="VARCHAR" property="updateUser"/>
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="PICTURE" jdbcType="BLOB" property="picture" typeHandler="org.apache.ibatis.type.BlobTypeHandler"/>
+    </resultMap>
+
+    <!-- 按条件查询列表的接口 -->
+    <select id="list" parameterType="com.yihuisoft.common.vo.PagerVO" resultMap="BaseResultMap">
+        SELECT t.ID,t.FILE_NAME,t.FILE_ALIAS_NAME,t.UPLOAD_TIME,t.UPLOAD_USER,t.STATUS,t.PICTURE,s.ORGN_NAME
+        t.ORGN_CODE,t.OPT_ORGN_CODE,t.OPT_USER_CODE,t.UPDATE_USER,t.UPDATE_TIME
+        FROM T_SCREEN t
+        LEFT JOIN T_SYS_ORGAN s on s.ORGN_CODE = t.ORGN_CODE
+        <where>
+            1=1
+            <if test="data!=null">
+            <if test="data.orgnCode!=null and data.orgnCode!= ''">
+                AND t.ORGN_CODE = #{data.orgnCode}
+            </if>
+            <if test="data.fileName!=null and data.fileName!= ''">
+                AND t.FILE_NAME LIKE CONCAT(CONCAT('%', #{data.fileName}), '%')
+            </if>
+            <if test="data.status!=null and data.status!= ''">
+                AND t.STATUS= #{data.status}
+            </if>
+            <if test="data.uploadUser!=null and data.uploadUser!= ''">
+                AND t.UPLOAD_USER LIKE CONCAT(CONCAT('%', #{data.uploadUser}), '%')
+            </if>
+            <if test="data.startTime != null and data.startTime != ''">
+                and t.UPLOAD_TIME &gt;= to_date(#{data.startTime},'yyyy-MM-dd')
+            </if>
+            <if test="data.endTime != null and data.endTime != ''">
+                and t.UPLOAD_TIME &lt;= to_date(#{data.endTime},'yyyy-MM-dd')+1
+            </if>
+            </if>
+        </where>
+        ORDER BY t.OPT_ORGN_LEVEL DESC
+    </select>
+
+    <!-- 按条件查询列表的接口 -->
+    <select id="listAll" parameterType="com.yihuisoft.maintenancebiz.entity.screen.SystemScreen" resultMap="BaseResultMap">
+        SELECT t.ID,t.FILE_NAME,t.FILE_ALIAS_NAME,t.UPLOAD_TIME,t.UPLOAD_USER,t.STATUS,t.PICTURE,s.ORGN_NAME FROM
+        T_SCREEN t
+        LEFT JOIN T_SYS_ORGAN s on s.ORGN_CODE = t.ORGN_CODE
+        <where>
+            1=1
+                <if test="orgnCode!=null and orgnCode!= ''">
+                    AND t.ORGN_CODE = #{orgnCode}
+                </if>
+                <if test="fileAliasName!=null and fileAliasName!= ''">
+                    AND t.file_Alias_Name = #{fileAliasName}
+                </if>
+
+                <if test="id != null">
+                    AND t.id != #{id,jdbcType=DECIMAL}
+                </if>
+
+        </where>
+        ORDER BY t.OPT_ORGN_LEVEL DESC
+    </select>
+
+    <!-- 按条件查询列表的接口 -->
+    <select id="search" parameterType="com.yihuisoft.common.vo.PagerVO" resultMap="BaseResultMap">
+        SELECT t.ID,t.FILE_NAME,t.FILE_ALIAS_NAME,t.UPLOAD_TIME,t.UPLOAD_USER,t.STATUS,t.PICTURE,s.ORGN_NAME FROM
+        T_SCREEN t
+        LEFT JOIN T_SYS_ORGAN s on s.ORGN_CODE = t.ORGN_CODE
+        <where>
+            1=1
+            <if test="data!=null">
+                <if test="data.orgnCode!=null and data.orgnCode!= ''">
+                    AND t.ORGN_CODE = #{data.orgnCode}
+                </if>
+                <if test="data.fileName!=null and data.fileName!= ''">
+                    AND t.FILE_NAME LIKE CONCAT(CONCAT('%', #{data.fileName}), '%')
+                </if>
+                <if test="data.status!=null and data.status!= ''">
+                    AND t.STATUS= #{data.status}
+                </if>
+                <if test="data.uploadUser!=null and data.uploadUser!= ''">
+                    AND t.UPLOAD_USER LIKE CONCAT(CONCAT('%', #{data.uploadUser}), '%')
+                </if>
+                <if test="data.startTime != null and data.startTime != ''">
+                    and t.UPLOAD_TIME &gt;= to_date(#{data.startTime},'yyyy-MM-dd')
+                </if>
+                <if test="data.endTime != null and data.endTime != ''">
+                    and t.UPLOAD_TIME &lt;= to_date(#{data.endTime},'yyyy-MM-dd')+1
+                </if>
+            </if>
+        </where>
+        ORDER BY t.OPT_ORGN_LEVEL DESC
+    </select>
+
+    <select id="get" parameterType="com.yihuisoft.maintenancebiz.entity.screen.SystemScreen" resultMap="BaseResultMap">
+        SELECT t.ID,t.FILE_NAME,t.FILE_ALIAS_NAME,t.UPLOAD_TIME,t.UPLOAD_USER,t.STATUS,t.PICTURE,
+        t.ORGN_CODE,t.OPT_ORGN_CODE,t.OPT_USER_CODE,t.UPDATE_USER,t.UPDATE_TIME
+        FROM T_SCREEN t
+        where ID = #{id,jdbcType=DECIMAL}
+    </select>
+
+    <insert id="save" parameterType="com.yihuisoft.maintenancebiz.entity.screen.SystemScreen">
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="BEFORE">
+        select SEQ_T_SCREEN_ID.nextval AS id from DUAL
+    </selectKey>
+    insert into T_SCREEN
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        ID,
+        <if test="fileName != null">
+            FILE_NAME,
+        </if>
+        <if test="fileAliasName != null">
+            FILE_ALIAS_NAME,
+        </if>
+        <if test="uploadTime != null">
+            UPLOAD_TIME,
+        </if>
+        <if test="uploadUser != null">
+            UPLOAD_USER,
+        </if>
+        <if test="status != null">
+            STATUS,
+        </if>
+        <if test="picture != null">
+            PICTURE,
+        </if>
+        <if test="orgnName != null">
+            ORGN_NAME,
+        </if>
+        <if test="orgnCode != null">
+            ORGN_CODE,
+        </if>
+        <if test="optOrgnCode != null">
+            OPT_ORGN_CODE,
+        </if>
+        <if test="optOrgnLevel != null">
+            OPT_ORGN_LEVEL,
+        </if>
+        <if test="optUserCode != null">
+            OPT_USER_CODE,
+        </if>
+        <if test="updateUser != null">
+            UPDATE_USER,
+        </if>
+        <if test="updateTime != null">
+            UPDATE_TIME,
+        </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+        ${id},
+        <if test="fileName != null">
+            #{fileName,jdbcType=VARCHAR},
+        </if>
+        <if test="fileAliasName != null">
+            #{fileAliasName,jdbcType=VARCHAR},
+        </if>
+        <if test="uploadTime != null">
+            #{uploadTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="uploadUser != null">
+            #{uploadUser,jdbcType=VARCHAR},
+        </if>
+        <if test="status != null">
+            #{status,jdbcType=VARCHAR},
+        </if>
+        <if test="picture != null">
+            #{picture,jdbcType=BLOB},
+        </if>
+        <if test="orgnName != null">
+            #{orgnName,jdbcType=VARCHAR},
+        </if>
+        <if test="orgnCode != null">
+            #{orgnCode,jdbcType=VARCHAR},
+        </if>
+        <if test="optOrgnCode != null">
+            #{optOrgnCode,jdbcType=VARCHAR},
+        </if>
+        <if test="optOrgnLevel != null">
+            #{optOrgnLevel,jdbcType=VARCHAR},
+        </if>
+        <if test="optUserCode != null">
+            #{optUserCode,jdbcType=VARCHAR},
+        </if>
+        <if test="updateUser != null">
+            #{updateUser,jdbcType=VARCHAR},
+        </if>
+        <if test="updateTime != null">
+            #{updateTime,jdbcType=TIMESTAMP},
+        </if>
+    </trim>
+</insert>
+
+    <delete id="deleteById" parameterType="com.yihuisoft.maintenancebiz.entity.screen.SystemScreen">
+        delete from T_SCREEN
+        where ID = #{id,jdbcType=DECIMAL}
+    </delete>
+
+    <update id="updateById" parameterType="com.yihuisoft.maintenancebiz.entity.screen.SystemScreen">
+        update T_SCREEN
+        <set>
+            <if test="fileName != null">
+                FILE_NAME = #{fileName,jdbcType=VARCHAR},
+            </if>
+            <if test="fileAliasName != null">
+                FILE_ALIAS_NAME = #{fileAliasName,jdbcType=VARCHAR},
+            </if>
+            <if test="uploadTime != null">
+                UPLOAD_TIME = #{uploadTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="uploadUser != null">
+                UPLOAD_USER = #{uploadUser,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                STATUS = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="picture != null">
+                PICTURE = #{picture,jdbcType=BLOB},
+            </if>
+            <if test="orgnName != null">
+                ORGN_NAME = #{orgnName,jdbcType=VARCHAR},
+            </if>
+            <if test="orgnCode != null">
+                ORGN_CODE = #{orgnCode,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUser != null">
+                UPDATE_USER = #{updateUser,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+
+        </set>
+        where ID = #{id,jdbcType=DECIMAL}
+    </update>
+</mapper>

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yihuisoft.logbiz.mapper.log.TransLogSocketMapper">
+  <resultMap id="BaseResultMap" type="com.yihuisoft.logbiz.entity.log.TransLogSocket">
+    <id column="id" jdbcType="DECIMAL" property="id" />
+    <result column="ROW_ID" jdbcType="VARCHAR" property="rowid" />
+    <result column="SERIAL_NO" jdbcType="VARCHAR" property="serialNo" />
+    <result column="SERVICE_NO" jdbcType="VARCHAR" property="serviceNo" />
+    <result column="TRANS_MAKR" jdbcType="VARCHAR" property="transMakr" />
+    <result column="TRANS_HEAD" jdbcType="VARCHAR" property="transHead" />
+    <result column="TERMINAL_NO" jdbcType="VARCHAR" property="terminalNo" />
+    <result column="DEVICE_ID" jdbcType="VARCHAR" property="deviceId" />
+    <result column="CARD_NO" jdbcType="VARCHAR" property="cardNo" />
+    <result column="CIS" jdbcType="VARCHAR" property="cis" />
+    <result column="TRANS_TIME" jdbcType="TIMESTAMP" property="transTime" />
+    <result column="SOCKET_SEND" jdbcType="CLOB" property="socketSend" />
+    <result column="SOCKET_REC" jdbcType="CLOB" property="socketRec" />
+    <result column="ERRORCODE" jdbcType="VARCHAR" property="errorCode" />
+    <result column="ERRORMESSAGE" jdbcType="VARCHAR" property="errorMessage" />
+    <result column="ERRORLOCATION" jdbcType="VARCHAR" property="errorLocation" />
+    <result column="ERRORDESCRIPTION" jdbcType="VARCHAR" property="errorDescription" />
+    <result column="ERRORSTACK" jdbcType="CLOB" property="errorStack" />
+    <result column="TRANS_RESP_TIME" jdbcType="TIMESTAMP" property="transRespTime" />
+    <result column="TRANS_STATUS" jdbcType="DECIMAL" property="transStatus" />
+    <result column="ORGN_CODE" jdbcType="VARCHAR" property="orgnCode" />
+    <result column="SOCKET_TYPE" jdbcType="VARCHAR" property="socketType" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, SERIAL_NO, SERVICE_NO, TRANS_MAKR, TRANS_HEAD, TERMINAL_NO, DEVICE_ID, CARD_NO,CIS,to_char(TRANS_TIME,'yyyy-MM-dd HH24:mi:ss') TRANS_TIME,SOCKET_SEND,SOCKET_REC,ERRORCODE,
+    ERRORMESSAGE,ERRORLOCATION,ERRORDESCRIPTION,ERRORSTACK,to_char(TRANS_RESP_TIME,'yyyy-MM-dd HH24:mi:ss') TRANS_RESP_TIME,TRANS_STATUS,ORGN_CODE,SOCKET_TYPE
+  </sql>
+
+
+
+  <select id="queryTransLogSocket" parameterType="com.yihuisoft.logbiz.entity.log.TransLogSocket" resultMap="BaseResultMap" databaseId="oracle">
+    select  <include refid="Base_Column_List"/>
+    FROM T_SYS_TRANS_LOG_SOCKET
+    <where>
+    <if test="transHead != null and transHead != ''">
+      AND TRANS_HEAD = #{transHead, jdbcType=VARCHAR}
+    </if>
+    <if test="orgnCode!=null and orgnCode!= ''">
+       AND ORGN_CODE = #{orgnCode,jdbcType=VARCHAR}
+    </if>
+    <if test="socketType!= null and socketType != ''">
+      AND SOCKET_TYPE = #{socketType, jdbcType=INTEGER}
+    </if>
+    <if test="transStatus != null and transStatus != ''">
+      AND TRANS_STATUS = #{transStatus, jdbcType=VARCHAR}
+    </if>
+    <if test="timeStart != null and timeStart != ''">
+      AND TRANS_TIME &gt;= to_date(#{timeStart},'yyyy-MM-dd')
+    </if>
+    <if test="timeEnd != null and timeEnd != ''">
+      AND TRANS_TIME &lt;= to_date(#{timeEnd},'yyyy-MM-dd')+1
+    </if>
+    </where>
+    order by id desc
+
+  </select>
+
+
+  <insert id="insertSocket" parameterType="com.yihuisoft.logbiz.entity.log.TransLogSocket"  databaseId="oracle">
+    INSERT INTO T_SYS_TRANS_LOG_SOCKET
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      ID,
+      TRANS_TIME,
+      <if test="serialNo != null and serialNo != ''">
+        SERIAL_NO,
+      </if>
+      <if test="serviceNo != null and serviceNo != ''">
+        SERVICE_NO,
+      </if>
+      <if test="transMakr != null and transMakr != ''">
+        TRANS_MAKR,
+      </if>
+      <if test="transHead != null and transHead != ''">
+        TRANS_HEAD,
+      </if>
+      <if test="terminalNo != null and terminalNo != ''">
+        TERMINAL_NO,
+      </if>
+      <if test="deviceId != null and deviceId != ''">
+        DEVICE_ID,
+      </if>
+      <if test="cardNo != null and cardNo != ''">
+        CARD_NO,
+      </if>
+      <if test="cis != null and cis != ''">
+        CIS,
+      </if>
+      <if test="socketSend != null and socketSend != ''">
+        SOCKET_SEND,
+      </if>
+      <if test="socketRec != null and socketRec != ''">
+        SOCKET_REC,
+      </if>
+      <if test="errorCode != null and errorCode != ''">
+        ERRORCODE,
+      </if>
+      <if test="errorMessage != null and errorMessage != ''">
+        ERRORMESSAGE,
+      </if>
+      <if test="errorLocation != null and errorLocation != ''">
+        ERRORLOCATION,
+      </if>
+      <if test="errorDescription != null and errorDescription != ''">
+        ERRORDESCRIPTION,
+      </if>
+      <if test="errorStack != null and errorStack != ''">
+        ERRORSTACK,
+      </if>
+      <if test="transStatus != null and transStatus != ''">
+        TRANS_STATUS,
+      </if>
+      <if test="orgnCode != null and orgnCode != ''">
+        ORGN_CODE,
+      </if>
+      <if test="socketType != null and socketType != ''">
+        SOCKET_TYPE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      sys_trans_log_socket.nextval,
+      sysdate ,
+      <if test="serialNo != null and serialNo != ''">
+        #{serialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceNo != null and serviceNo != ''">
+        #{serviceNo,jdbcType=VARCHAR},
+      </if>
+      <if test="transMakr != null and transMakr != ''">
+        #{transMakr,jdbcType=VARCHAR},
+      </if>
+      <if test="transHead != null and transHead != ''">
+        #{transHead,jdbcType=VARCHAR},
+      </if>
+      <if test="terminalNo != null and terminalNo != ''">
+        #{terminalNo,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceId != null and deviceId != ''">
+        #{deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="cardNo != null and cardNo != ''">
+        #{cardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="cis != null and cis != ''">
+        #{cis,jdbcType=VARCHAR},
+      </if>
+      <if test="socketSend != null and socketSend != ''">
+        #{socketSend,jdbcType=VARCHAR},
+      </if>
+      <if test="socketRec != null and socketRec != ''">
+        #{socketRec,jdbcType=VARCHAR},
+      </if>
+      <if test="errorCode != null and errorCode != ''">
+        #{errorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="errorMessage != null and errorMessage != ''">
+        #{errorMessage,jdbcType=VARCHAR},
+      </if>
+      <if test="errorLocation != null and errorLocation != ''">
+        #{errorLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="errorDescription != null and errorDescription != ''">
+        #{errorDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="errorStack != null and errorStack != ''">
+        #{errorStack,jdbcType=VARCHAR},
+      </if>
+      <if test="transStatus != null and transStatus != ''">
+        #{transStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="orgnCode != null and orgnCode != ''">
+        #{orgnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="socketType != null and socketType != ''">
+        #{socketType,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+
+</mapper>

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yihuisoft.authoritybiz.mapper.system.SystemMapper">
+    <resultMap id="BaseResultMap" type="com.yihuisoft.authoritybiz.entity.system.SystemModel">
+        <id column="ID" jdbcType="DECIMAL" property="id"/>
+        <result column="SYS_CODE" jdbcType="VARCHAR" property="sysCode"/>
+        <result column="SYS_NAME" jdbcType="VARCHAR" property="sysName"/>
+        <result column="SYS_HOST" jdbcType="VARCHAR" property="sysHost"/>
+        <result column="SYS_PORT" jdbcType="VARCHAR" property="sysPort"/>
+        <result column="STATUS" jdbcType="VARCHAR" property="status"/>
+        <result column="CREATE_USERID" jdbcType="DECIMAL" property="createUserid"/>
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="UPDATE_USERID" jdbcType="DECIMAL" property="updateUserid"/>
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    ID, SYS_CODE, SYS_NAME, SYS_HOST, SYS_PORT,STATUS,CREATE_USERID, CREATE_TIME, UPDATE_USERID,
+    UPDATE_TIME
+  </sql>
+
+    <!--db2、oracle、mysql通用-->
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from T_SYS_INF
+        where ID = #{id,jdbcType=DECIMAL}
+    </select>
+
+    <!--db2、oracle、mysql通用-->
+    <select id="selectByCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from T_SYS_INF
+        where SYS_CODE = #{sysCode,jdbcType=VARCHAR}
+    </select>
+
+    <!--db2、oracle、mysql通用-->
+    <select id="selectByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from T_SYS_INF
+        where SYS_NAME = #{sysName,jdbcType=VARCHAR}
+    </select>
+
+    <!--db2、oracle、mysql通用-->
+    <select id="listAllSystems" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include> from T_SYS_INF
+    </select>
+
+    <!--db2、oracle、mysql通用-->
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+      delete from T_SYS_INF
+      where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+
+    <insert id="insertSelective" parameterType="java.util.Map" databaseId="db2">
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="BEFORE">
+            select SEQ_SYS_INF_ID.Nextval as id from sysibm.sysdummy1
+        </selectKey>
+        insert into T_SYS_INF
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            ID,
+            SYS_CODE,
+            <if test="sysName != null">
+                SYS_NAME,
+            </if>
+            <if test="sysHost != null">
+                SYS_HOST,
+            </if>
+            <if test="sysPort != null">
+                SYS_PORT,
+            </if>
+            <if test="status != null">
+                STATUS,
+            </if>
+            <if test="createUserid != null">
+                CREATE_USERID,
+            </if>
+            CREATE_TIME
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            ${id},
+            ${id},
+            <if test="sysName != null">
+                #{sysName,jdbcType=VARCHAR},
+            </if>
+            <if test="sysHost != null">
+                #{sysHost,jdbcType=VARCHAR},
+            </if>
+            <if test="sysPort != null">
+                #{sysPort,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="createUserid != null">
+                #{createUserid,jdbcType=DECIMAL},
+            </if>
+            current timestamp
+        </trim>
+    </insert>
+
+    <insert id="insertSelective" parameterType="java.util.Map" databaseId="oracle">
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="BEFORE">
+            select SEQ_SYS_INF_ID.Nextval as id from DUAL
+        </selectKey>
+        insert into T_SYS_INF
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            ID,
+            SYS_CODE,
+            <if test="sysName != null">
+                SYS_NAME,
+            </if>
+            <if test="sysHost != null">
+                SYS_HOST,
+            </if>
+            <if test="sysPort != null">
+                SYS_PORT,
+            </if>
+            <if test="status != null">
+                STATUS,
+            </if>
+            <if test="createUserid != null">
+                CREATE_USERID,
+            </if>
+            CREATE_TIME
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            ${id},
+            ${id},
+            <if test="sysName != null">
+                #{sysName,jdbcType=VARCHAR},
+            </if>
+            <if test="sysHost != null">
+                #{sysHost,jdbcType=VARCHAR},
+            </if>
+            <if test="sysPort != null">
+                #{sysPort,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="createUserid != null">
+                #{createUserid,jdbcType=DECIMAL},
+            </if>
+            sysdate
+        </trim>
+    </insert>
+
+    <!--db2、oracle通用-->
+    <update id="updateByPrimaryKeySelective" parameterType="java.util.Map">
+        update T_SYS_INF
+        <set>
+            <if test="sysName != null">
+                SYS_NAME = #{sysName,jdbcType=VARCHAR},
+            </if>
+            <if test="sysHost != null">
+                SYS_HOST = #{sysHost,jdbcType=VARCHAR},
+            </if>
+            <if test="sysPort != null">
+                SYS_PORT = #{sysPort,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                STATUS = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="createUserid != null">
+                CREATE_USERID = #{createUserid,jdbcType=DECIMAL},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUserid != null">
+                UPDATE_USERID = #{updateUserid,jdbcType=DECIMAL},
+            </if>
+            UPDATE_TIME = sysdate
+        </set>
+        where ID = #{id,jdbcType=DECIMAL}
+    </update>
+
+    <!--db2、oracle、mysql通用-->
+    <select id="listSystems" parameterType="com.yihuisoft.common.dto.InDTO" resultMap="BaseResultMap">
+        select * from T_SYS_INF
+        <where>
+            <if test="sysName!=null and sysName !=''">
+                AND SYS_NAME LIKE '%'||#{sysName}||'%'
+            </if>
+        </where>
+    </select>
+
+    <!--db2、oracle、mysql通用-->
+    <select id="getSysByRoleId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+     select * from t_sys_inf where status =1 and id in
+      ( select distinct sys_id from T_SYS_MENU_INF  where id in (
+            select MENU_ID from  T_SYS_ROLE_MENU where ROLE_ID=#{roleId}
+          )
+        ) order by id
+  </select>
+</mapper>

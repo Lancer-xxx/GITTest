@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yihuisoft.authoritybiz.mapper.organization.OrganizationMapper">
+    <resultMap id="BaseResultMap" type="com.yihuisoft.authoritybiz.entity.organization.Organization">
+        <id column="ID" jdbcType="DECIMAL" property="id"/>
+        <result column="ORGN_CODE" jdbcType="VARCHAR" property="orgnCode"/>
+        <result column="PARENT_ORGN_CODE" jdbcType="VARCHAR" property="parentOrgnCode"/>
+        <result column="ORGN_NAME" jdbcType="VARCHAR" property="orgnName"/>
+        <result column="ORGN_SHORT_NAME" jdbcType="VARCHAR" property="orgnShortName"/>
+        <result column="ORGN_TYPE" jdbcType="VARCHAR" property="orgnType"/>
+        <result column="ORGN_LEVEL" jdbcType="VARCHAR" property="orgnLevel"/>
+        <result column="ORGN_STATUS" jdbcType="VARCHAR" property="orgnStatus"/>
+        <result column="ZONE_TYPE" jdbcType="VARCHAR" property="zoneType"/>
+        <result column="ADMIN_LEVEL" jdbcType="VARCHAR" property="adminLevel"/>
+        <result column="FUNC_TYPE" jdbcType="VARCHAR" property="funcType"/>
+        <result column="BANK_NO" jdbcType="VARCHAR" property="bankNo"/>
+        <result column="ORGN_WDSIGN" jdbcType="VARCHAR" property="orgnWdsign"/>
+        <result column="CREATE_USERID" jdbcType="DECIMAL" property="createUserid"/>
+        <result column="CREATE_TIME" jdbcType="VARCHAR" property="createTime"/>
+        <result column="UPDATE_USERID" jdbcType="DECIMAL" property="updateUserid"/>
+        <result column="UPDATE_TIME" jdbcType="VARCHAR" property="updateTime"/>
+        <result column="PRD_SALE_FLAG" jdbcType="VARCHAR" property="prdSaleFlag"/>
+        <result column="DLFR_FLAG" jdbcType="VARCHAR" property="dlfrFlag"/>
+        <result column="ORGN_INHERIT_SIGN" jdbcType="VARCHAR" property="orgnInheritSign"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        ID, ORGN_CODE, PARENT_ORGN_CODE, ORGN_NAME, ORGN_SHORT_NAME, ORGN_TYPE, ORGN_LEVEL,
+        ORGN_STATUS, ZONE_TYPE, ADMIN_LEVEL, FUNC_TYPE, BANK_NO, ORGN_WDSIGN, CREATE_USERID,
+        CREATE_TIME, UPDATE_USERID, UPDATE_TIME,DLFR_FLAG,ORGN_INHERIT_SIGN
+    </sql>
+    <sql id="listBatch">
+        ID, ORGN_CODE, PARENT_ORGN_CODE, ORGN_NAME, ORGN_SHORT_NAME, ORGN_TYPE,ORGN_LEVEL,ORGN_STATUS,BANK_NO,ORGN_WDSIGN,PRD_SALE_FLAG,DLFR_FLAG,ORGN_INHERIT_SIGN
+    </sql>
+    <!--根据条件查询机构信息-->
+    <select id="getOrganization" parameterType="com.yihuisoft.authoritybiz.entity.organization.Organization" resultMap="BaseResultMap">
+        select * from T_SYS_ORGAN where orgn_code=#{orgnCode}
+    </select>
+
+    <!--根据当前机构code查询下一级机构集合-->
+    <select id="getChildrenByCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+      select ORGN_CODE,ORGN_NAME from T_SYS_ORGAN where PARENT_ORGN_CODE =#{orgnCode,jdbcType=VARCHAR}  order by orgn_code desc
+    </select>
+    <!--使用Oracle根据机构code递归查询子机构及其下级所有机构-->
+    <select id="listSubOrganizations" parameterType="java.lang.String" resultMap="BaseResultMap" databaseId="oracle">
+      SELECT * FROM T_SYS_ORGAN START WITH ORGN_CODE = #{orgnCode,jdbcType=VARCHAR} CONNECT BY PRIOR ORGN_CODE = PARENT_ORGN_CODE
+    </select>
+    <!--db2、oracle、mysql通用-->
+    <select id="listOrgnCodeLv3ByOrgnCode" parameterType="string" resultType="map">
+     SELECT ORGN_CODE_LV_3 FROM (
+        SELECT A.ORGN_CODE ORGN_CODE_LV_3, A.ORGN_NAME ORGN_NAME_LV_3, A.PARENT_ORGN_CODE PARENT_ORGN_CODE_LV_3, A.* FROM T_SYS_ORGAN A WHERE A.ORGN_LEVEL='3' UNION ALL SELECT B.ORGN_CODE ORGN_CODE_LV_3,B.ORGN_NAME ORGN_NAME_LV_3, B.PARENT_ORGN_CODE PARENT_ORGN_CODE_LV_3, A.* FROM T_SYS_ORGAN A JOIN T_SYS_ORGAN B ON A.PARENT_ORGN_CODE=B.ORGN_CODE WHERE A.ORGN_LEVEL='4' UNION ALL SELECT C.ORGN_CODE ORGN_CODE_LV_3,C.ORGN_NAME ORGN_NAME_LV_3, C.PARENT_ORGN_CODE PARENT_ORGN_CODE_LV_3, A.* FROM T_SYS_ORGAN A JOIN T_SYS_ORGAN B ON A.PARENT_ORGN_CODE=B.ORGN_CODE JOIN T_SYS_ORGAN C ON B.PARENT_ORGN_CODE=C.ORGN_CODE WHERE A.ORGN_LEVEL='5'
+      ) WHERE ORGN_CODE=#{orgnCode}
+    </select>
+    <!--db2、oracle、mysql通用-->
+    <select id="getCustDataAuth" parameterType="string" resultType="string">
+      SELECT IS_LINOFCLUBSOROTHER FROM T_SYS_ORGAN_JURISDICTION WHERE ORGN_CODE=#{orgnCode}
+    </select>
+    <select id="checkOrganization" parameterType="com.yihuisoft.authoritybiz.entity.organization.Organization" resultType="int">
+      SELECT count(*) FROM T_SYS_ORGAN
+       <where>
+           <if test="bankNo !=null and bankNo != ''">
+               AND BANK_NO = #{bankNo}
+           </if>
+           <if test="orgnCode !=null and orgnCode != ''">
+               AND ORGN_CODE = #{orgnCode}
+           </if>
+       </where>
+    </select>
+    <select id="listBatch" resultType="com.yihuisoft.authoritybiz.entity.organization.OrganizationDO">
+        SELECT
+        <include refid="listBatch"></include>
+        FROM T_SYS_ORGAN
+        <if test="organizationIdArray != null and organizationIdArray.length>0">
+            WHERE ID IN
+        </if>
+        <foreach collection="organizationIdArray" item="organizationIdArray" index="index" open="(" separator="," close=")">
+            #{organizationIdArray}
+        </foreach>
+    </select>
+    <select id="listChildrensOrgnIds" parameterType="java.lang.String" resultType="java.lang.Long">
+        SELECT ID FROM T_SYS_ORGAN  WHERE ORGN_INHERIT_SIGN LIKE #{orgnInheritSign}||'%'
+    </select>
+</mapper>

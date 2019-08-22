@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yihuisoft.authoritybiz.mapper.terminal.TerminalRelatedMapper">
+    <resultMap id="BaseResultMap" type="com.yihuisoft.authoritybiz.entity.terminal.Terminal">
+        <result column="LOG_DEVICE_ID" jdbcType="VARCHAR" property="logDeviceId"/>
+        <result column="TERMINAL_MAC" jdbcType="VARCHAR" property="terminalMac" />
+        <result column="ORGN_CODE" jdbcType="VARCHAR" property="orgnCode" />
+        <result column="TERMINAL_IP" jdbcType="VARCHAR" property="terminalIp" />
+        <result column="BANK_NO" jdbcType="VARCHAR" property="bankNo" />
+        <result column="TRANS_NO" jdbcType="VARCHAR" property="transNo" />
+        <result column="TELLER_NO" jdbcType="VARCHAR" property="tellerNo" />
+        <result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
+        <result column="VIP_ADDR" jdbcType="VARCHAR" property="vipAddr" />
+        <result column="TERM_NOTE" jdbcType="VARCHAR" property="termNote" />
+        <result column="START_DATE" jdbcType="DATE" property="startDate" />
+        <result column="END_DATE" jdbcType="DATE" property="endDate" />
+        <result column="WORKCODE" jdbcType="DATE" property="workCode" />
+        <result column="WORKCODEDATE" jdbcType="DATE" property="workCodeDate" />
+        <result column="MAINCODE" jdbcType="DATE" property="mainCode" />
+        <result column="CODE" jdbcType="DATE" property="code" />
+    </resultMap>
+
+    <sql id="terminalValuesSql">
+        LOG_DEVICE_ID,TERMINAL_MAC,ORGN_CODE,TERMINAL_IP,BANK_NO,TRANS_NO,TELLER_NO,USER_NAME,VIP_ADDR,TERM_NOTE,START_DATE,END_DATE,
+        WORKCODE,WORKCODEDATE,MAINCODE,CODE
+    </sql>
+
+    <select id="listTerminals" parameterType="com.yihuisoft.authoritybiz.entity.terminal.Terminal" resultMap="BaseResultMap">
+        SELECT
+        <include refid="terminalValuesSql"/>
+        FROM T_TERMINAL
+        WHERE 1=1
+        <if test="logDeviceId != null and logDeviceId!= ''">
+            AND LOG_DEVICE_ID = #{logDeviceId,jdbcType=VARCHAR}
+        </if>
+        <if test="tellerNo != null and tellerNo!= ''">
+            AND TELLER_NO = #{tellerNo,jdbcType=VARCHAR}
+        </if>
+        <if test="orgnCode != null and orgnCode!= ''">
+            AND ORGN_CODE = #{orgnCode,jdbcType=VARCHAR}
+        </if>
+        <if test="bankNo != null and bankNo!= ''">
+            AND BANK_NO = #{bankNo,jdbcType=VARCHAR}
+        </if>
+        <if test="transNo != null and transNo!= ''">
+            AND TRANS_NO = #{transNo,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <insert id="saveTerminal" parameterType="com.yihuisoft.authoritybiz.entity.terminal.Terminal" useGeneratedKeys="false">
+        insert into T_TERMINAL
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="logDeviceId != null">
+                LOG_DEVICE_ID,
+            </if>
+            <if test="terminalMac != null">
+                TERMINAL_MAC,
+            </if>
+            <if test="orgnCode != null">
+                ORGN_CODE,
+            </if>
+            <if test="terminalIp != null">
+                TERMINAL_IP,
+            </if>
+            <if test="bankNo != null">
+                BANK_NO,
+            </if>
+            <if test="logDeviceId != null">
+                TRANS_NO,
+            </if>
+            <if test="tellerNo != null">
+                TELLER_NO,
+            </if>
+            <if test="userName != null">
+                USER_NAME,
+            </if>
+            <if test="vipAddr != null">
+                VIP_ADDR,
+            </if>
+            <if test="termNote != null">
+                TERM_NOTE,
+            </if>
+            <if test="startDate != null">
+                START_DATE,
+            </if>
+            <if test="endDate != null">
+                END_DATE,
+            </if>
+            <if test="workCode !=null">
+                WORKCODE,
+            </if>
+            <if test="workCodeDate !=null">
+                WORKCODEDATE,
+            </if>
+            <if test="mainCode !=null">
+                MAINCODE,
+            </if>
+            <if test="code !=null">
+                CODE,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="logDeviceId != null">
+                #{logDeviceId,jdbcType=VARCHAR},
+            </if>
+            <if test="terminalMac != null">
+                #{terminalMac,jdbcType=VARCHAR},
+            </if>
+            <if test="orgnCode != null">
+                #{orgnCode,jdbcType=VARCHAR},
+            </if>
+            <if test="terminalIp != null">
+                #{terminalIp,jdbcType=VARCHAR},
+            </if>
+            <if test="bankNo != null">
+                #{bankNo,jdbcType=VARCHAR},
+            </if>
+            <if test="logDeviceId != null">
+                #{logDeviceId,jdbcType=VARCHAR},
+            </if>
+            <if test="tellerNo != null">
+                #{tellerNo,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="vipAddr != null">
+                #{vipAddr,jdbcType=VARCHAR},
+            </if>
+            <if test="termNote != null">
+                #{termNote,jdbcType=VARCHAR},
+            </if>
+            <if test="startDate != null">
+                #{startDate,jdbcType=DATE},
+            </if>
+            <if test="endDate != null">
+                #{endDate,jdbcType=DATE},
+            </if>
+            <if test="workCode !=null">
+                #{workCode},
+            </if>
+            <if test="workCodeDate !=null">
+                #{workCodeDate},
+            </if>
+            <if test="mainCode !=null">
+                #{mainCode},
+            </if>
+            <if test="code !=null">
+                #{code},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="getTerminalById" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT  <include refid="terminalValuesSql"/> FROM T_TERMINAL
+        WHERE LOG_DEVICE_ID = #{logDeviceId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateTerminal" parameterType="com.yihuisoft.authoritybiz.entity.terminal.Terminal">
+        UPDATE T_TERMINAL
+        <set>
+            <if test="terminalMac != null">
+                TERMINAL_MAC = #{terminalMac,jdbcType=VARCHAR},
+            </if>
+            <if test="orgnCode != null">
+                ORGN_CODE = #{orgnCode,jdbcType=VARCHAR},
+            </if>
+            <if test="terminalIp != null">
+                TERMINAL_IP = #{terminalIp,jdbcType=VARCHAR},
+            </if>
+            <if test="bankNo != null">
+                BANK_NO = #{bankNo,jdbcType=VARCHAR},
+            </if>
+            <if test="transNo != null">
+                TRANS_NO = #{transNo,jdbcType=VARCHAR},
+            </if>
+            <if test="tellerNo != null">
+                TELLER_NO = #{tellerNo,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null">
+                USER_NAME = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="vipAddr != null">
+                VIP_ADDR = #{vipAddr,jdbcType=VARCHAR},
+            </if>
+            <if test="termNote != null">
+                TERM_NOTE = #{termNote,jdbcType=VARCHAR},
+            </if>
+            <if test="startDate != null">
+                START_DATE = #{startDate,jdbcType=DATE},
+            </if>
+            <if test="endDate != null">
+                END_DATE = #{endDate,jdbcType=DATE},
+            </if>
+        </set>
+        where LOG_DEVICE_ID = #{logDeviceId,jdbcType=VARCHAR}
+    </update>
+
+    <!-- 验证通机ip是否唯一 -->
+    <select id="findOrgnCodeByIp" parameterType="com.yihuisoft.authoritybiz.entity.terminal.Terminal" resultMap="BaseResultMap">
+        SELECT LOG_DEVICE_ID,ORGN_CODE,TERMINAL_IP
+          FROM T_TERMINAL WHERE ORGN_CODE = #{orgnCode,jdbcType=VARCHAR} AND TERMINAL_IP = #{terminalIp,jdbcType=VARCHAR}
+    </select>
+
+</mapper>

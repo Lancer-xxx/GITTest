@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yihuisoft.logbiz.mapper.login.LoginMapper">
+  <resultMap id="BaseResultMap" type="com.yihuisoft.logbiz.entity.login.Login">
+    <result column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="USER_ID" jdbcType="VARCHAR" property="userId" />
+    <result column="SYS_ID" jdbcType="DECIMAL" property="sysId" />
+    <result column="ORGAN_ID" jdbcType="DECIMAL" property="organId" />
+    <result column="ORGN_CODE" jdbcType="VARCHAR" property="orgnCode" />
+    <result column="LOGIN_DATE" jdbcType="TIMESTAMP" property="loginDate" />
+    <result column="LOGOUT_DATE" jdbcType="TIMESTAMP" property="logoutDate" />
+    <result column="LOGIN_IP" jdbcType="VARCHAR" property="loginIp" />
+    <result column="LOG_DEVICE_ID" jdbcType="VARCHAR" property="logDeviceId" />
+    <result column="TERMINAL_MAC" jdbcType="VARCHAR" property="terminalMac" />
+    <result column="LOGIN_CHANNEL" jdbcType="VARCHAR" property="loginChannel" />
+    <result column="LOGIN_STATUS" jdbcType="VARCHAR" property="loginStatus" />
+    <result column="REASON" jdbcType="VARCHAR" property="reason" />
+  </resultMap>
+
+  <resultMap id="BaseLoginLogMap" type="com.yihuisoft.logbiz.entity.login.LoginLog" extends="BaseResultMap">
+    <result column="GENDER" jdbcType="VARCHAR" property="gender" />
+    <result column="PHONE" jdbcType="VARCHAR" property="phone" />
+    <result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
+    <result column="WORK_NO" jdbcType="VARCHAR" property="workNo" />
+    <result column="ROLE_ID" jdbcType="DECIMAL" property="roleId" />
+    <result column="ROLE_NAME" jdbcType="VARCHAR" property="roleName" />
+    <result column="ORGN_NAME" jdbcType="VARCHAR" property="orgnName" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    ID,USER_ID,SYS_ID,ORGAN_ID,ORGN_CODE,to_char(LOGIN_DATE,'yyyy-MM-dd HH24:mi:ss') LOGIN_DATE,to_char(LOGOUT_DATE,'yyyy-MM-dd HH24:mi:ss') LOGOUT_DATE,LOGIN_IP,LOG_DEVICE_ID,TERMINAL_MAC,LOGIN_CHANNEL,USER_NAME,WORK_NO,ROLE_ID,ROLE_NAME,ORGN_NAME
+  </sql>
+
+
+
+  <insert id="insertSelective" parameterType="map" databaseId="oracle">
+    insert into T_SYS_USER_LOGIN_LOG
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      ID,
+      <if test="data.userId != null">
+        USER_ID,
+      </if>
+      <if test="data.sysId != null">
+        SYS_ID,
+      </if>
+      <if test="data.organId != null">
+        ORGAN_ID,
+      </if>
+      <if test="data.orgnCode != null">
+        ORGN_CODE,
+      </if>
+      LOGIN_DATE,
+      <if test="data.logoutDate != null">
+        LOGOUT_DATE,
+      </if>
+      <if test="data.loginIp != null">
+        LOGIN_IP,
+      </if>
+      <if test="data.logDeviceId != null">
+        LOG_DEVICE_ID,
+      </if>
+      <if test="data.terminalMac != null">
+        TERMINAL_MAC,
+      </if>
+      <if test="data.loginChannel != null">
+        LOGIN_CHANNEL,
+      </if>
+      <if test="data.userName != null">
+        USER_NAME,
+      </if>
+      <if test="data.workNo != null">
+        WORK_NO,
+      </if>
+      <if test="data.roleId != null">
+        ROLE_ID,
+      </if>
+      <if test="data.orgnName != null">
+        ORGN_NAME,
+      </if>
+      <if test="data.roleName != null">
+        ROLE_NAME,
+      </if>
+      <if test="data.loginStatus != null">
+        LOGIN_STATUS,
+      </if>
+      <if test="data.reason != null">
+        REASON,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      #{data.id,jdbcType=DECIMAL},
+      <if test="data.userId != null">
+        #{data.userId,jdbcType=VARCHAR},
+      </if>
+      <if test="data.sysId != null">
+        #{data.sysId,jdbcType=DECIMAL},
+      </if>
+      <if test="data.organId != null">
+        #{data.organId,jdbcType=DECIMAL},
+      </if>
+      <if test="data.orgnCode != null">
+        #{data.orgnCode,jdbcType=VARCHAR},
+      </if>
+      sysdate,
+      <if test="data.logoutDate != null">
+       sysdate,
+      </if>
+      <if test="data.loginIp != null">
+        #{data.loginIp,jdbcType=VARCHAR},
+      </if>
+      <if test="data.logDeviceId != null">
+        #{data.logDeviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="data.terminalMac != null">
+        #{data.terminalMac,jdbcType=VARCHAR},
+      </if>
+      <if test="data.loginChannel != null">
+        #{data.loginChannel,jdbcType=VARCHAR},
+      </if>
+      <if test="data.userName != null">
+        #{data.userName,jdbcType=VARCHAR},
+      </if>
+      <if test="data.workNo != null">
+        #{data.workNo,jdbcType=VARCHAR},
+      </if>
+      <if test="data.roleId != null">
+        #{data.roleId,jdbcType=DECIMAL},
+      </if>
+      <if test="data.orgnName != null">
+        #{data.orgnName,jdbcType=VARCHAR},
+      </if>
+      <if test="data.roleName != null">
+        #{data.roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="data.loginStatus != null">
+        #{data.loginStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="data.reason != null">
+        #{data.reason,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+
+  <!--db2、oracle、mysql通用-->
+  <select id="getLoginLogs" parameterType="com.yihuisoft.logbiz.entity.login.LoginLog" resultMap="BaseLoginLogMap">
+    select USER_ID,WORK_NO,USER_NAME,ROLE_NAME,ORGN_CODE,ORGN_NAME,LOG_DEVICE_ID,LOGIN_IP,LOGIN_DATE,LOGIN_STATUS  from T_SYS_USER_LOGIN_LOG
+    <where>
+      <if test="userName!=null and userName!= ''">
+        AND USER_NAME LIKE  '%'||#{userName}||'%'
+      </if>
+      <if test="workNo!=null and workNo!= ''">
+        AND WORK_NO = #{workNo,jdbcType=VARCHAR}
+      </if>
+      <if test="roleId!=null and roleId!= ''">
+        AND ROLE_ID = #{roleId,jdbcType=DECIMAL}
+      </if>
+      <if test="orgnCode!=null and orgnCode!= ''">
+        AND orgn_code = #{orgnCode,jdbcType=DECIMAL}
+      </if>
+      <if test="startTime != null and startTime != ''">
+        and LOGIN_DATE &gt;= to_date(#{startTime},'yyyy-MM-dd')
+      </if>
+      <if test="endTime != null and endTime != ''">
+        and LOGIN_DATE &lt;= to_date(#{endTime},'yyyy-MM-dd')+1
+      </if>
+    </where>
+    order by LOGIN_DATE desc
+  </select>
+
+
+  <!--db2、oracle、mysql通用-->
+  <!--<select id="getLoginLogs" parameterType="com.yihuisoft.common.InDTO" resultMap="BaseLoginLogMap">
+    select * from (select A.*,B.USER_NAME,B.ROLE_ID,B.WORK_NO,C.ROLE_NAME,D.ORGN_NAME from T_SYS_USER_LOGIN_LOG A
+      join  T_SYS_USER_INFO B on A.USER_ID=B.ID
+      join  T_SYS_ROLE_INF C on B.ROLE_ID=C.ID
+      join  T_SYS_ORGAN D on A.orgn_code=D.orgn_code
+    <where>
+      <if test="data.userName!=null and data.userName!= ''">
+        AND B.USER_NAME LIKE  '%'||#{data.userName}||'%'
+      </if>
+      <if test="data.workNo!=null and data.workNo!= ''">
+        AND B.WORK_NO = #{data.workNo,jdbcType=VARCHAR}
+      </if>
+      <if test="data.roleId!=null and data.roleId!= ''">
+        AND C.ID = #{data.roleId,jdbcType=DECIMAL}
+      </if>
+      <if test="data.orgnCode!=null and data.orgnCode!= ''">
+        AND a.orgn_code = #{data.orgnCode,jdbcType=DECIMAL}
+      </if>
+    </where>
+    order by a.LOGIN_DATE desc)
+  </select>-->
+
+
+  <!-- 注销时写入退出时间 -->
+  <!--db2、oracle、mysql通用-->
+  <update id="signOut" parameterType="java.lang.Long">
+    UPDATE T_SYS_USER_LOGIN_LOG SET LOGOUT_DATE = SYSDATE WHERE ID = #{logId}
+  </update>
+
+  <!--&lt;!&ndash;db2、oracle、mysql通用&ndash;&gt;
+  <select id="selectLoginFirst" parameterType="java.lang.String" resultType="integer">
+select count(*) from t_sys_user_login_log o join  t_sys_user_info  i on  o.user_id=i.id  where i.USER_CODE=#{userCode}
+  </select>-->
+
+  <!--db2、oracle、mysql通用-->
+  <select id="selectLoginFirst" parameterType="java.lang.String" resultType="integer">
+    select count(*) from t_sys_user_login_log where WORK_NO=#{workNo}
+  </select>
+
+
+  <!--db2、oracle、mysql通用-->
+  <!--<select id="showLogin" parameterType="java.lang.String" resultMap="BaseLoginLogMap">
+          select distinct B.*,B.USER_NAME,B.ROLE_ID,B.WORK_NO,C.ROLE_NAME,D.ORGN_NAME from T_SYS_USER_LOGIN_LOG A
+      join  T_SYS_USER_INFO B on A.USER_ID=B.ID
+      join  T_SYS_ROLE_INF C on B.ROLE_ID=C.ID
+      join (select orgn_code,orgn_name from T_SYS_ORGAN
+           ) D on A.orgn_code=D.orgn_code  where B.WORK_NO=#{userCode}
+
+  </select>-->
+
+
+</mapper>

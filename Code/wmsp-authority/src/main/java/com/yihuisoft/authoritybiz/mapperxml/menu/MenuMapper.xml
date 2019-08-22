@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yihuisoft.authoritybiz.mapper.menu.MenuMapper">
+    <resultMap id="BaseResultMap" type="com.yihuisoft.authoritybiz.entity.menu.Menu">
+        <id column="ID" jdbcType="DECIMAL" property="id" />
+        <result column="MENU_CODE" jdbcType="VARCHAR" property="menuCode" />
+        <result column="MENU_NAME" jdbcType="VARCHAR" property="menuName" />
+        <result column="PARENT_ID" jdbcType="DECIMAL" property="parentId" />
+        <result column="SYS_ID" jdbcType="DECIMAL" property="sysId" />
+        <result column="MENU_LEVEL" jdbcType="VARCHAR" property="menuLevel" />
+        <result column="ROUTER_URL" jdbcType="VARCHAR" property="routerUrl" />
+        <result column="MENU_URL" jdbcType="VARCHAR" property="menuUrl" />
+        <result column="MENU_DESC" jdbcType="VARCHAR" property="menuDesc" />
+        <result column="MENU_STATUS" jdbcType="VARCHAR" property="menuStatus" />
+        <result column="IS_LEAF" jdbcType="VARCHAR" property="isLeaf" />
+        <result column="MENU_ORDER" jdbcType="VARCHAR" property="menuOrder" />
+        <result column="CREATE_USERID" jdbcType="DECIMAL" property="createUserid" />
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="UPDATE_USERID" jdbcType="DECIMAL" property="updateUserid" />
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="SYS_HOST" jdbcType="VARCHAR" property="sysIp" />
+        <result column="SYS_PORT" jdbcType="VARCHAR" property="sysPort" />
+        <result column="SYS_NAME" jdbcType="VARCHAR" property="sysName" />
+        <result column="MENU_TYPE" jdbcType="VARCHAR" property="menuType" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    ID, MENU_CODE, MENU_NAME, PARENT_ID, SYS_ID, MENU_LEVEL, MENU_URL, MENU_DESC, MENU_STATUS,
+    IS_LEAF, MENU_ORDER, CREATE_USERID, UPDATE_USERID, CREATE_TIME, UPDATE_TIME, MENU_TYPE, ROUTER_URL
+  </sql>
+
+    <resultMap id="BaserRoleMenuMap" type="com.yihuisoft.authoritybiz.entity.menu.RoleMenu">
+        <id column="ID" jdbcType="DECIMAL" property="id" />
+        <result column="ROLE_ID" jdbcType="DECIMAL" property="roleId"/>
+        <result column="MENU_ID" jdbcType="DECIMAL" property="menuId" />
+        <result column="STATUS" jdbcType="VARCHAR" property="status" />
+        <result column="CREATE_USERID" jdbcType="DECIMAL" property="createUserid" />
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="UPDATE_USERID" jdbcType="DECIMAL" property="updateUserid" />
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    </resultMap>
+    <sql id="Base_RoleMenu_List">
+    ID, ROLE_ID, MENU_ID, STATUS, CREATE_USERID, CREATE_TIME, UPDATE_USERID, UPDATE_TIME
+    </sql>
+
+    <select id="getParentMenuById"  resultMap="BaseResultMap">
+      SELECT <include refid="Base_Column_List"/> FROM T_SYS_MENU_INF  WHERE  ID = #{id} and MENU_STATUS =1
+  </select>
+    <update id="updateMenu" parameterType="com.yihuisoft.authoritybiz.entity.menu.Menu" databaseId="oracle">
+        update T_SYS_MENU_INF
+        <set>
+            <if test="menuCode != null">
+                MENU_CODE = #{menuCode,jdbcType=VARCHAR},
+            </if>
+            <if test="menuName != null">
+                MENU_NAME = #{menuName,jdbcType=VARCHAR},
+            </if>
+            <if test="parentId != null">
+                PARENT_ID = #{parentId,jdbcType=DECIMAL},
+            </if>
+            <if test="sysId != null">
+                SYS_ID = #{sysId,jdbcType=DECIMAL},
+            </if>
+            <if test="menuLevel != null">
+                MENU_LEVEL = #{menuLevel,jdbcType=VARCHAR},
+            </if>
+            <if test="menuUrl != null">
+                MENU_URL = #{menuUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="routerUrl != null">
+                ROUTER_URL = #{routerUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="menuDesc != null">
+                MENU_DESC = #{menuDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="menuStatus != null">
+                MENU_STATUS = #{menuStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="isLeaf != null">
+                IS_LEAF = #{isLeaf,jdbcType=VARCHAR},
+            </if>
+            <if test="menuOrder != null">
+                MENU_ORDER = #{menuOrder,jdbcType=VARCHAR},
+            </if>
+            <if test="createUserid != null">
+                CREATE_USERID = #{createUserid,jdbcType=DECIMAL},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUserid != null">
+                UPDATE_USERID = #{updateUserid,jdbcType=DECIMAL},
+            </if>
+            UPDATE_TIME = sysdate,
+            <if test="menuType != null">
+                MENU_TYPE = #{menuType,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where ID = #{id,jdbcType=DECIMAL}
+    </update>
+    <insert id="saveMenu" parameterType="com.yihuisoft.authoritybiz.entity.menu.Menu">
+        insert into  T_SYS_MENU_INF
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            ID,
+            <if test="menuName != null">
+                MENU_NAME,
+            </if>
+            <if test="parentId != null">
+                PARENT_ID,
+            </if>
+            <if test="sysId != null">
+                SYS_ID,
+            </if>
+            <if test="menuLevel != null">
+                MENU_LEVEL,
+            </if>
+            <if test="menuUrl != null">
+                MENU_URL,
+            </if>
+            <if test="routerUrl != null">
+                ROUTER_URL,
+            </if>
+            <if test="menuDesc != null">
+                MENU_DESC,
+            </if>
+            <if test="menuStatus != null">
+                MENU_STATUS,
+            </if>
+            <if test="isLeaf != null">
+                IS_LEAF,
+            </if>
+            <if test="menuOrder != null">
+                MENU_ORDER,
+            </if>
+            <if test="createUserid != null">
+                CREATE_USERID,
+            </if>
+            CREATE_TIME,
+            <if test="updateUserid != null">
+                UPDATE_USERID,
+            </if>
+            UPDATE_TIME,
+            <if test="menuType != null">
+                MENU_TYPE
+            </if>
+        </trim>
+
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{id},
+            <if test="menuName != null">
+                #{menuName,jdbcType=VARCHAR},
+            </if>
+            <if test="parentId != null">
+                #{parentId,jdbcType=DECIMAL},
+            </if>
+            <if test="sysId != null">
+                #{sysId,jdbcType=DECIMAL},
+            </if>
+            <if test="menuLevel != null">
+                #{menuLevel,jdbcType=VARCHAR},
+            </if>
+            <if test="menuUrl != null">
+                #{menuUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="routerUrl != null">
+                #{routerUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="menuDesc != null">
+                #{menuDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="menuStatus != null">
+                #{menuStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="isLeaf != null">
+                #{isLeaf,jdbcType=VARCHAR},
+            </if>
+            <if test="menuOrder != null">
+                #{menuOrder,jdbcType=VARCHAR},
+            </if>
+            <if test="createUserid != null">
+                #{createUserid,jdbcType=DECIMAL},
+            </if>
+            sysdate,
+            <if test="updateUserid != null">
+                #{updateUserid,jdbcType=DECIMAL},
+            </if>
+            sysdate,
+            <if test="menuType != null">
+                #{menuType,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </insert>
+    <update id="deleteMenu" parameterType="java.lang.Long">
+    UPDATE  T_SYS_MENU_INF SET IS_DELETED = 1
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+    <select id="getMenu" parameterType="com.yihuisoft.authoritybiz.entity.menu.Menu" resultMap="BaseResultMap">
+      select <include refid="Base_Column_List"/> from T_SYS_MENU_INF WHERE  id = #{id}
+  </select>
+    <select id="listRootMenuBySysId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    SELECT * FROM T_SYS_MENU_INF  WHERE  PARENT_ID = 0 AND SYS_ID=#{sysId,jdbcType=DECIMAL} AND MENU_STATUS is not null
+  </select>
+    <delete id="deleteRoleMenuByRoleId" parameterType="java.lang.Long">
+    delete from  T_SYS_ROLE_MENU where role_id=#{roleId}
+  </delete>
+    <select id="listRoleMenuByMenuId" resultMap="BaserRoleMenuMap">
+    select * from T_SYS_ROLE_MENU where menu_id = #{menuId}
+  </select>
+
+    <select id="listMenu" parameterType="com.yihuisoft.authoritybiz.entity.menu.Menu" resultMap="BaseResultMap">
+    SELECT * FROM T_SYS_MENU_INF
+    <where>
+        <if test="parentId != null and parentId != ''">
+            AND PARENT_ID = #{parentId}
+        </if>
+        <if test="menuName != null and menuName != ''">
+            AND  MENU_NAME = #{menuName}
+        </if>
+        <if test="menuUrl != null and menuUrl !=''">
+            AND MENU_URL = #{menuUrl}
+        </if>
+        <if test="sysId != null and sysId !=''">
+            AND SYS_ID = #{sysId}
+        </if>
+        <if test="menuStatus != null and menuStatus !=''">
+            AND MENU_STATUS = #{menuStatus}
+        </if>
+        <if test="id != null and id != ''">
+            AND ID = #{id}
+        </if>
+        AND IS_DELETED = 0
+
+    </where>
+</select>
+    <select id="listMenuRoot" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM T_SYS_MENU_INF WHERE MENU_STATUS =1 and IS_DELETED=0
+    </select>
+    <!--中间表添加数据-->
+    <insert id="saveRoleMenu"  parameterType="com.yihuisoft.authoritybiz.entity.menu.RoleMenu">
+        insert into T_SYS_ROLE_MENU(id,role_id, menu_id,status, create_userid, create_time, update_userid, update_time)
+        values(#{id}, #{roleId}, #{menuId}, #{status}, #{updateUserid}, sysdate, #{updateUserid}, sysdate)
+    </insert>
+
+    <select id="getListByRoleId" parameterType="java.lang.Long" resultType="com.yihuisoft.authoritybiz.entity.menu.RoleMenuDO">
+        SELECT
+        rm.ROLE_ID, rm.MENU_ID, T.MENU_URL, T.ROUTER_URL, T.MENU_TYPE, T.MENU_NAME, T.MENU_DESC
+        FROM
+        T_SYS_ROLE_MENU rm
+        LEFT JOIN T_SYS_MENU_INF T ON T.ID = RM.MENU_ID
+        LEFT JOIN T_SYS_ROLE_INF R ON R.ID = rm.ROLE_ID
+        WHERE
+        1 = 1
+        <if test="roleId != null">
+            AND rm.ROLE_ID=#{roleId}
+        </if>
+        and T.MENU_STATUS = 1
+        AND R.ROLE_STATUS = 1
+    </select>
+
+    <select id="getSysByRoleId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        M2."ID",
+        M2.MENU_NAME,
+        M2.MENU_URL,
+        M2.ROUTER_URL,
+        M2."MENU_TYPE",
+	    M2.PARENT_ID
+        FROM
+        T_SYS_ROLE_MENU m1
+        LEFT JOIN T_SYS_MENU_INF m2 ON M1.MENU_ID = M2."ID"
+        LEFT JOIN T_SYS_ROLE_INF R ON R.ID = m1.ROLE_ID
+        WHERE 1=1
+        <if test="roleId != null">
+            AND M1.ROLE_ID = #{roleId}
+        </if>
+        AND m2.IS_DELETED = 0
+        AND M2.MENU_STATUS = 1
+        AND m2.MENU_TYPE in ('0', '1', '2')
+        AND R.ROLE_STATUS = 1
+        ORDER BY M2.CREATE_TIME ASC
+    </select>
+
+    <select id="getList" parameterType="com.yihuisoft.authoritybiz.entity.menu.Menu" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM T_SYS_MENU_INF
+        WHERE 1=1
+        <if test="menuName != null and menuName != ''">
+            AND MENU_NAME like CONCAT(CONCAT('%', #{menuName}), '%')
+        </if>
+        <if test="parentId != null">
+            AND PARENT_ID = #{parentId}
+        </if>
+        <if test="menuUrl != null and menuUrl != ''">
+            AND MENU_URL like CONCAT(CONCAT('%', #{menuUrl}), '%')
+        </if>
+        AND IS_DELETED = 0
+        AND MENU_TYPE IN ('3', '4')
+        ORDER BY UPDATE_TIME desc
+    </select>
+
+    <select id="getSysList" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM T_SYS_MENU_INF
+        WHERE IS_DELETED = 0
+        AND MENU_STATUS = 1
+        AND MENU_TYPE in ('0', '1', '2')
+    </select>
+    <!--判断菜单名称重复-->
+    <select id="getMenuCountByMenuName" parameterType="com.yihuisoft.authoritybiz.entity.menu.Menu" resultType="java.lang.Long">
+        SELECT count(1)
+        FROM T_SYS_MENU_INF
+        WHERE MENU_NAME = #{menuName}
+        AND IS_DELETED = 0
+        <if test="id != null">
+            AND ID != #{id}
+        </if>
+        AND MENU_TYPE IN ('0', '1', '2')
+        AND MENU_STATUS = 1
+    </select>
+    <!--判断功能名称重复-->
+    <select id="getFuncCountByMenuName" parameterType="com.yihuisoft.authoritybiz.entity.menu.Menu" resultType="java.lang.Long">
+        SELECT count(1)
+        FROM T_SYS_MENU_INF
+        WHERE MENU_NAME = #{menuName}
+        AND IS_DELETED = 0
+        <if test="id != null">
+            AND ID != #{id}
+        </if>
+        AND MENU_TYPE IN ('3', '4')
+        AND MENU_STATUS = 1
+    </select>
+    <!-- 根据菜单id删除分配的菜单、功能 -->
+    <delete id="deleteByMenuId" parameterType="java.lang.Long">
+        DELETE FROM T_SYS_ROLE_MENU WHERE MENU_ID = #{menuId}
+    </delete>
+
+    <select id="selectMenuByParentId" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM T_SYS_MENU_INF
+        WHERE
+        PARENT_ID = #{parentId}
+        AND IS_DELETED = 0
+        AND MENU_STATUS = 1
+        AND MENU_TYPE IN (0, 1, 2)
+    </select>
+    <select id="selectFuncByParentId" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM T_SYS_MENU_INF
+        WHERE
+        PARENT_ID = #{parentId}
+        AND IS_DELETED = 0
+        AND MENU_STATUS = 1
+        AND MENU_TYPE NOT IN (0, 1, 2)
+    </select>
+
+    <!--获取根菜单及父级是根菜单的所有菜单-->
+    <select id="listMenuTree" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        T_SYS_MENU_INF
+        WHERE
+        IS_DELETED = 0
+        AND MENU_STATUS = 1
+        AND (
+            MENU_TYPE = '0'
+            OR PARENT_ID IN (
+                SELECT
+                ID
+                FROM
+                T_SYS_MENU_INF
+                WHERE
+                IS_DELETED = 0
+                AND MENU_STATUS = 1
+                AND PARENT_ID = 0
+            )
+        )
+        AND MENU_TYPE IN (0, 1, 2)
+    </select>
+
+    <!--菜单管理下拉框数据获取-->
+    <select id="selectListMenu" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        T_SYS_MENU_INF
+        WHERE
+        IS_DELETED = 0
+        AND MENU_STATUS = 1
+        AND MENU_TYPE IN (0, 1)
+    </select>
+</mapper>

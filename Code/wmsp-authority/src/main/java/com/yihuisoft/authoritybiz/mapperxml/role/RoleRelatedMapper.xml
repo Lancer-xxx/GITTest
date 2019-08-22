@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yihuisoft.authoritybiz.mapper.role.RoleRelatedMapper">
+    <resultMap id="BaseResultMap" type="com.yihuisoft.authoritybiz.entity.role.Role">
+        <id column="ID" jdbcType="DECIMAL" property="id" />
+        <result column="ROLE_CODE" jdbcType="VARCHAR" property="roleCode" />
+        <result column="ROLE_NAME" jdbcType="VARCHAR" property="roleName" />
+        <result column="ROLE_DESC" jdbcType="VARCHAR" property="roleDesc" />
+        <result column="ROLE_STATUS" jdbcType="VARCHAR" property="roleStatus" />
+        <result column="ROLE_LEVEL" jdbcType="VARCHAR" property="roleLevel" />
+        <result column="DATA_AUTH" jdbcType="VARCHAR" property="dataAuth" />
+        <result column="CREATE_USERID" jdbcType="DECIMAL" property="createUserid" />
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="UPDATE_USERID" jdbcType="DECIMAL" property="updateUserid" />
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        ID, ROLE_CODE, ROLE_NAME, ROLE_DESC, ROLE_STATUS, ROLE_LEVEL,DATA_AUTH, CREATE_USERID, CREATE_TIME,
+        UPDATE_USERID, UPDATE_TIME
+    </sql>
+
+    <!--db2、oracle、mysql通用：角色列表分页查询-->
+    <select id="findRoleList" parameterType="com.yihuisoft.authoritybiz.entity.role.Role" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"></include>
+        from T_SYS_ROLE_INF
+        <where>
+            <if test="id!=null and id!= ''">
+                AND ID= #{id,jdbcType=DECIMAL}
+            </if>
+            <if test="roleName!=null and roleName!= ''">
+                AND ROLE_NAME LIKE  '%'||#{roleName}||'%'
+            </if>
+            AND IS_DELETED = 0
+        </where>
+        order by UPDATE_TIME DESC
+    </select>
+
+    <!-- 新建角色信息：db2 -->
+    <insert id="saveRole" parameterType="com.yihuisoft.authoritybiz.entity.role.Role" databaseId="db2">
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="BEFORE">
+            select SEQ_SYS_ROLE_INF_ID.Nextval from sysibm.sysdummy1
+        </selectKey>
+        insert into T_SYS_ROLE_INF
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            ID,
+            ROLE_CODE,
+            <if test="roleName != null">
+                ROLE_NAME,
+            </if>
+            <if test="roleDesc != null">
+                ROLE_DESC,
+            </if>
+            <if test="roleStatus != null">
+                ROLE_STATUS,
+            </if>
+            <if test="roleLevel != null">
+                ROLE_LEVEL,
+            </if>
+            <if test="dataAuth != null">
+                DATA_AUTH,
+            </if>
+            <if test="createUserid != null">
+                CREATE_USERID,
+            </if>
+            CREATE_TIME,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            ${id},
+            ${id},
+            <if test="roleName != null">
+                #{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="roleDesc != null">
+                #{roleDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="roleStatus != null">
+                #{roleStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="roleLevel != null">
+                #{roleLevel,jdbcType=VARCHAR},
+            </if>
+            <if test="dataAuth != null">
+                #{dataAuth,jdbcType=VARCHAR},
+            </if>
+            <if test="createUserid != null">
+                #{createUserid,jdbcType=DECIMAL},
+            </if>
+            sysdate
+        </trim>
+    </insert>
+
+    <!-- 新建角色信息：oracle -->
+    <insert id="saveRole" parameterType="com.yihuisoft.authoritybiz.entity.role.Role" databaseId="oracle">
+        insert into T_SYS_ROLE_INF
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            ID,
+            ROLE_CODE,
+            <if test="roleName != null">
+                ROLE_NAME,
+            </if>
+            <if test="roleDesc != null">
+                ROLE_DESC,
+            </if>
+            <if test="roleStatus != null">
+                ROLE_STATUS,
+            </if>
+            <if test="roleLevel != null">
+                ROLE_LEVEL,
+            </if>
+            <if test="dataAuth != null">
+                DATA_AUTH,
+            </if>
+            <if test="createUserid != null">
+                CREATE_USERID,
+            </if>
+            CREATE_TIME,
+            <if test="updateUserid != null">
+                UPDATE_USERID,
+            </if>
+            UPDATE_TIME,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{id},
+            #{roleCode,jdbcType=VARCHAR},
+            <if test="roleName != null">
+                #{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="roleDesc != null">
+                #{roleDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="roleStatus != null">
+                #{roleStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="roleLevel != null">
+                #{roleLevel,jdbcType=VARCHAR},
+            </if>
+            <if test="dataAuth != null">
+                #{dataAuth,jdbcType=VARCHAR},
+            </if>
+            <if test="createUserid != null">
+                #{createUserid,jdbcType=DECIMAL},
+            </if>
+            sysdate,
+            <if test="updateUserid != null">
+                #{updateUserid,jdbcType=DECIMAL},
+            </if>
+            sysdate
+        </trim>
+    </insert>
+
+    <!-- 删除角色信息：db2、oracle、mysql通用-->
+    <update id="deleterRoleById" parameterType="com.yihuisoft.authoritybiz.entity.role.Role">
+        UPDATE T_SYS_ROLE_INF SET IS_DELETED = 1 where ID = #{id,jdbcType=DECIMAL}
+    </update>
+
+    <!--db2、oracle通用-->
+    <update id="updateRole" parameterType="com.yihuisoft.authoritybiz.entity.role.Role">
+        update T_SYS_ROLE_INF
+        <set>
+            <if test="roleName != null">
+                ROLE_NAME = #{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="roleDesc != null">
+                ROLE_DESC = #{roleDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="roleStatus != null">
+                ROLE_STATUS = #{roleStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="roleLevel != null">
+                ROLE_LEVEL = #{roleLevel,jdbcType=VARCHAR},
+            </if>
+            <if test="dataAuth != null">
+                DATA_AUTH = #{dataAuth,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUserid != null">
+                UPDATE_USERID = #{updateUserid,jdbcType=DECIMAL},
+            </if>
+            UPDATE_TIME =sysdate
+        </set>
+        where ID = #{id,jdbcType=DECIMAL}
+    </update>
+
+    <!--db2、oracle、mysql通用: 传入角色对象，支持多种条件查询-->
+    <select id="findRole" parameterType="com.yihuisoft.authoritybiz.entity.role.Role" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include> from T_SYS_ROLE_INF
+        <where>
+            <if test="id!=null and id!= ''">
+                AND ID= #{id,jdbcType=DECIMAL}
+            </if>
+            <if test="roleName!=null and roleName!= ''">
+                AND ROLE_NAME LIKE  '%'||#{roleName}||'%'
+            </if>
+        </where>
+    </select>
+
+    <!--db2、oracle、mysql通用-->
+    <select id="findRoleByName" parameterType="com.yihuisoft.authoritybiz.entity.role.Role" resultType="java.lang.Long">
+        select count(1)
+        from T_SYS_ROLE_INF
+        WHERE
+        ROLE_NAME=#{roleName}
+        and IS_DELETED = 0
+        <if test="id!=null and id!= ''">
+            AND ID != #{id,jdbcType=DECIMAL}
+        </if>
+    </select>
+
+    <!--db2、oracle、mysql通用-->
+    <select id="findRoleById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include> from T_SYS_ROLE_INF WHERE  ID = #{roleId,jdbcType=DECIMAL}
+    </select>
+
+    <!--查询角色等级大于当前角色等级的角色列表：db2、oracle、mysql通用-->
+    <select id="getRoleDownByRoleId" parameterType="com.yihuisoft.authoritybiz.entity.role.Role" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from T_SYS_ROLE_INF
+        where is_deleted = 0  ORDER BY UPDATE_TIME desc
+    </select>
+
+    <!--db2、oracle通用-->
+    <update id="updateRoleById" parameterType="com.yihuisoft.authoritybiz.entity.role.Role">
+        update T_SYS_ROLE_INF
+        <set>
+            <if test="roleName != null">
+                ROLE_NAME = #{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="roleDesc != null">
+                ROLE_DESC = #{roleDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="roleStatus != null">
+                ROLE_STATUS = #{roleStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="roleLevel != null">
+                ROLE_LEVEL = #{roleLevel,jdbcType=VARCHAR},
+            </if>
+            <if test="dataAuth != null">
+                DATA_AUTH = #{dataAuth,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUserid != null">
+                UPDATE_USERID = #{updateUserid,jdbcType=DECIMAL},
+            </if>
+            UPDATE_TIME =sysdate
+        </set>
+        where ID = #{id,jdbcType=DECIMAL}
+    </update>
+
+    <update id="disableRoleById">
+        UPDATE T_SYS_ROLE_INF SET ROLE_STATUS = #{roleStatus} WHERE ID = #{id}
+    </update>
+</mapper>

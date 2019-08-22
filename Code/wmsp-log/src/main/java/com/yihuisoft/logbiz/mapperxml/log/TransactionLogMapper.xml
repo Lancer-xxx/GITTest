@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yihuisoft.logbiz.mapper.log.TransactionLogMapper">
+
+
+  <insert id="insertTransactionLog" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="id" databaseId="oracle">
+    insert into T_SYS_TRANSACTION_LOG
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="BEFORE">
+      select SEQ_TRANS_LOG_ID.Nextval as id from DUAL
+    </selectKey>
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="excepCode != null and excepCode != '' ">
+        EXCEP_CODE,
+      </if>
+        ID,
+      <if test="userId != null and userId != '' ">
+        USER_ID,
+      </if>
+      <if test="operation != null and operation != '' ">
+        OPERATION,
+      </if>
+      <if test="reqIp != null and reqIp != '' ">
+        REQ_IP,
+      </if>
+      <if test="reqTime != null and reqTime != '' ">
+        REQ_TIME,
+      </if>
+      <if test="clss != null and clss != '' ">
+        CLSS,
+      </if>
+      <if test="method != null and method != '' ">
+        METHOD,
+      </if>
+      <if test="params != null and params != '' ">
+        PARAMS,
+      </if>
+      <if test="excepDetail != null and excepDetail != '' ">
+        EXCEP_DETAIL,
+      </if>
+      <if test="status != null and status != '' ">
+        STATUS,
+      </if>
+      <if test="busiType != null and busiType != '' ">
+        BUSITYPE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="excepCode != null and excepCode != '' ">
+        #{excepCode,jdbcType=VARCHAR},
+      </if>
+        ${id},
+      <if test="userId != null and userId != '' ">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="operation != null and operation != '' ">
+        #{operation,jdbcType=VARCHAR},
+      </if>
+      <if test="reqIp != null and reqIp != '' ">
+        #{reqIp,jdbcType=VARCHAR},
+      </if>
+      <if test="reqTime != null and reqTime != '' ">
+        sysdate,
+      </if>
+      <if test="clss != null and clss != '' ">
+        #{clss,jdbcType=VARCHAR},
+      </if>
+      <if test="method != null and method != '' ">
+        #{method,jdbcType=VARCHAR},
+      </if>
+      <if test="params != null and params != '' ">
+        #{params,jdbcType=VARCHAR},
+      </if>
+      <if test="excepDetail != null and excepDetail != '' ">
+        #{excepDetail,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null and status != '' ">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="busiType != null and busiType != '' ">
+        #{busiType,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+
+  <!--db2、oracle、mysql通用-->
+  <select id="getTransactionLogList" parameterType="java.util.Map" resultType="com.yihuisoft.logbiz.entity.log.TransactionLog">
+    select ID,USER_ID,REQ_IP,OPERATION,CLSS,METHOD,PARAMS,EXCEP_CODE,EXCEP_DETAIL,BUSITYPE,STATUS from T_SYS_TRANSACTION_LOG
+      <where>
+        <if test="reqIp != null and reqIp != '' ">
+          AND  REQ_IP = #{reqIp,jdbcType=VARCHAR}
+        </if>
+        <if test="operation != null and operation != '' ">
+          AND  operation = #{operation,jdbcType=VARCHAR}
+        </if>
+        <if test="startTime != null and startTime != ''">
+          and REQ_TIME &gt;= to_date(#{startTime},'yyyy-MM-dd')
+        </if>
+        <if test="endTime != null and endTime != ''">
+          and REQ_TIME &lt;= to_date(#{endTime},'yyyy-MM-dd')+1
+        </if>
+        <if test="orgnCode != null and orgnCode != '' ">
+          AND  ORGN_CODE = #{orgnCode,jdbcType=VARCHAR}
+        </if>
+        <if test="status != null and status != '' ">
+          AND  STATUS = #{status,jdbcType=VARCHAR}
+        </if>
+      </where>
+  </select>
+
+</mapper>

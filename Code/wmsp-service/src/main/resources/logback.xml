@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <!--日志输出路径,LOG_HOME 事先要有可写权限,可有运维进行统一配置-->
+    <property name="LOG_HOME" value="/home/weblogic/dev/logs/wmsp" />
+
+    <property name="app.authority" value="app_authority"/>
+    <property name="app.common" value="app_common"/>
+    <property name="app.customer" value="app_customer"/>
+    <property name="app.log" value="app_log"/>
+    <property name="app.maintenance" value="app_maintenance"/>
+    <property name="app.error" value="app_error"/>
+    <property name="app.job" value="app_job"/>
+    <property name="app.total" value="app_total"/>
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d [%thread] %-5level %logger{36} [%file : %line] - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <!-- 统一认证日志 -->
+    <appender name="app_authority" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <!-- 过滤日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>  <!-- 如果命中就禁止这条日志 -->
+            <onMismatch>ACCEPT</onMismatch>  <!-- 如果没有命中就使用这条规则 -->
+        </filter>
+        <!--定义输出格式-->
+        <encoder>
+            <pattern>%d [%thread] %-5level %logger{36} [%file : %line] - %msg%n</pattern>
+        </encoder>
+        <!--定义日志滚动的策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--定义文件滚动时的文件名的格式-->
+            <fileNamePattern>${LOG_HOME}/logs/${app.authority}.%d{yyyy-MM-dd.HH}.log
+            </fileNamePattern>
+            <!--60天的时间周期，日志量最大20GB-->
+            <maxHistory>60</maxHistory>
+            <!-- 该属性在 1.1.6版本后 才开始支持-->
+            <totalSizeCap>20GB</totalSizeCap>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <!--每个日志文件最大100MB-->
+            <maxFileSize>100MB</maxFileSize>
+        </triggeringPolicy>
+    </appender>
+    <!-- 公共模块日志 -->
+    <appender name="app_common" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <!-- 过滤日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>  <!-- 如果命中就禁止这条日志 -->
+            <onMismatch>ACCEPT</onMismatch>  <!-- 如果没有命中就使用这条规则 -->
+        </filter>
+        <!--定义输出格式-->
+        <encoder>
+            <pattern>%d [%thread] %-5level %logger{36} [%file : %line] - %msg%n</pattern>
+        </encoder>
+        <!--定义日志滚动的策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--定义文件滚动时的文件名的格式-->
+            <fileNamePattern>${LOG_HOME}/logs/${app.common}.%d{yyyy-MM-dd.HH}.log
+            </fileNamePattern>
+            <!--60天的时间周期，日志量最大20GB-->
+            <maxHistory>60</maxHistory>
+            <!-- 该属性在 1.1.6版本后 才开始支持-->
+            <totalSizeCap>20GB</totalSizeCap>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <!--每个日志文件最大100MB-->
+            <maxFileSize>100MB</maxFileSize>
+        </triggeringPolicy>
+    </appender>
+    <!-- 客户线索日志 -->
+    <appender name="app_customer" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <!-- 过滤日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>  <!-- 如果命中就禁止这条日志 -->
+            <onMismatch>ACCEPT</onMismatch>  <!-- 如果没有命中就使用这条规则 -->
+        </filter>
+        <!--定义输出格式-->
+        <encoder>
+            <pattern>%d [%thread] %-5level %logger{36} [%file : %line] - %msg%n</pattern>
+        </encoder>
+        <!--定义日志滚动的策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--定义文件滚动时的文件名的格式-->
+            <fileNamePattern>${LOG_HOME}/logs/${app.customer}.%d{yyyy-MM-dd.HH}.log
+            </fileNamePattern>
+            <!--60天的时间周期，日志量最大20GB-->
+            <maxHistory>60</maxHistory>
+            <!-- 该属性在 1.1.6版本后 才开始支持-->
+            <totalSizeCap>20GB</totalSizeCap>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <!--每个日志文件最大100MB-->
+            <maxFileSize>100MB</maxFileSize>
+        </triggeringPolicy>
+    </appender>
+    <!-- 现场维护日志 -->
+    <appender name="app_maintenance" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <!-- 过滤日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>  <!-- 如果命中就禁止这条日志 -->
+            <onMismatch>ACCEPT</onMismatch>  <!-- 如果没有命中就使用这条规则 -->
+        </filter>
+        <!--定义输出格式-->
+        <encoder>
+            <pattern>%d [%thread] %-5level %logger{36} [%file : %line] - %msg%n</pattern>
+        </encoder>
+        <!--定义日志滚动的策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--定义文件滚动时的文件名的格式-->
+            <fileNamePattern>${LOG_HOME}/logs/${app.maintenance}.%d{yyyy-MM-dd.HH}.log
+            </fileNamePattern>
+            <!--60天的时间周期，日志量最大20GB-->
+            <maxHistory>60</maxHistory>
+            <!-- 该属性在 1.1.6版本后 才开始支持-->
+            <totalSizeCap>20GB</totalSizeCap>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <!--每个日志文件最大100MB-->
+            <maxFileSize>100MB</maxFileSize>
+        </triggeringPolicy>
+    </appender>
+    <!-- 日志模块日志 -->
+    <appender name="app_log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <!-- 过滤日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>  <!-- 如果命中就禁止这条日志 -->
+            <onMismatch>ACCEPT</onMismatch>  <!-- 如果没有命中就使用这条规则 -->
+        </filter>
+        <!--定义输出格式-->
+        <encoder>
+            <pattern>%d [%thread] %-5level %logger{36} [%file : %line] - %msg%n</pattern>
+        </encoder>
+        <!--定义日志滚动的策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--定义文件滚动时的文件名的格式-->
+            <fileNamePattern>${LOG_HOME}/logs/${app.log}.%d{yyyy-MM-dd.HH}.log
+            </fileNamePattern>
+            <!--60天的时间周期，日志量最大20GB-->
+            <maxHistory>60</maxHistory>
+            <!-- 该属性在 1.1.6版本后 才开始支持-->
+            <totalSizeCap>20GB</totalSizeCap>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <!--每个日志文件最大100MB-->
+            <maxFileSize>100MB</maxFileSize>
+        </triggeringPolicy>
+    </appender>
+
+    <!-- 系统总日志 -->
+    <appender name="app_total" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <!-- 过滤日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>  <!-- 如果命中就禁止这条日志 -->
+            <onMismatch>ACCEPT</onMismatch>  <!-- 如果没有命中就使用这条规则 -->
+        </filter>
+        <!--定义输出格式-->
+        <encoder>
+            <pattern>%d [%thread] %-5level %logger{36} [%file : %line] - %msg%n</pattern>
+        </encoder>
+        <!--定义日志滚动的策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--定义文件滚动时的文件名的格式-->
+            <fileNamePattern>${LOG_HOME}/logs/${app.total}.%d{yyyy-MM-dd.HH}.log
+            </fileNamePattern>
+            <!--60天的时间周期，日志量最大20GB-->
+            <maxHistory>60</maxHistory>
+            <!-- 该属性在 1.1.6版本后 才开始支持-->
+            <totalSizeCap>20GB</totalSizeCap>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <!--每个日志文件最大100MB-->
+            <maxFileSize>100MB</maxFileSize>
+        </triggeringPolicy>
+    </appender>
+    <!-- 指定name 在该app_authority 下的日志输出格式 这个就是在app_authority 上的日志输出格式-->
+    <logger name="app_authority" level="info">
+        <!-- 指定输出的appender -->
+        <appender-ref ref="app_authority"/>
+    </logger>
+    <logger name="app_common" level="info">
+        <!-- 指定输出的appender -->
+        <appender-ref ref="app_common"/>
+    </logger>
+    <logger name="app_customer" level="info">
+        <!-- 指定输出的appender -->
+        <appender-ref ref="app_customer"/>
+    </logger>
+    <logger name="app_log" level="info">
+        <!-- 指定输出的appender -->
+        <appender-ref ref="app_log"/>
+    </logger>
+    <logger name="app_maintenance" level="info">
+        <!-- 指定输出的appender -->
+        <appender-ref ref="app_maintenance"/>
+    </logger>
+    <logger name="app_total" level="info">
+        <!-- 指定输出的appender -->
+        <appender-ref ref="app_total"/>
+    </logger>
+
+    <!-- error日志 -->
+    <appender name="app_error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <!--定义输出格式-->
+        <encoder>
+            <pattern>%d [%thread] %-5level %logger{36} [%file : %line] - %msg%n</pattern>
+        </encoder>
+        <!--定义日志滚动的策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--定义文件滚动时的文件名的格式-->
+            <fileNamePattern>${LOG_HOME}/logs/${app.error}.%d{yyyy-MM-dd.HH}.log
+            </fileNamePattern>
+            <!--60天的时间周期，日志量最大20GB-->
+            <maxHistory>60</maxHistory>
+            <!-- 该属性在 1.1.6版本后 才开始支持-->
+            <totalSizeCap>20GB</totalSizeCap>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <!--每个日志文件最大100MB-->
+            <maxFileSize>100MB</maxFileSize>
+        </triggeringPolicy>
+    </appender>
+    <logger name="app_error" level="error">
+        <!-- 指定输出的appender -->
+        <appender-ref ref="app_error"/>
+    </logger>
+
+    <!-- job日志 -->
+    <appender name="app_job" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <!--定义输出格式-->
+        <encoder>
+            <pattern>%d [%thread] %-5level %logger{36} [%file : %line] - %msg%n</pattern>
+        </encoder>
+        <!--定义日志滚动的策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--定义文件滚动时的文件名的格式-->
+            <fileNamePattern>${LOG_HOME}/logs/${app.job}.%d{yyyy-MM-dd.HH}.log
+            </fileNamePattern>
+            <!--60天的时间周期，日志量最大20GB-->
+            <maxHistory>60</maxHistory>
+            <!-- 该属性在 1.1.6版本后 才开始支持-->
+            <totalSizeCap>20GB</totalSizeCap>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <!--每个日志文件最大100MB-->
+            <maxFileSize>100MB</maxFileSize>
+        </triggeringPolicy>
+    </appender>
+    <logger name="app_job" level="job">
+        <!-- 指定输出的appender -->
+        <appender-ref ref="app_job"/>
+    </logger>
+
+
+    <!-- 设置默认日志级别为INFO -->
+    <root level="info">
+        <appender-ref ref="app_total"/>
+        <appender-ref ref="stdout"/>
+    </root>
+</configuration>

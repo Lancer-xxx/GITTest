@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yihuisoft.maintenancebiz.mapper.param.SystemParamMapper">
+    <resultMap id="BaseResultMap" type="com.yihuisoft.maintenancebiz.entity.param.SystemParam">
+        <result column="ID" jdbcType="DECIMAL" property="id"/>
+        <result column="PARAM_NAME" jdbcType="VARCHAR" property="paramName"/>
+        <result column="PARAM_TYPE" jdbcType="VARCHAR" property="paramType"/>
+        <result column="PARAM_VALUE" jdbcType="VARCHAR" property="paramValue"/>
+        <result column="REMARK" jdbcType="VARCHAR" property="remark"/>
+        <result column="LAST_MOD" jdbcType="TIMESTAMP" property="lastMod"/>
+        <result column="PMODULE_NAME" jdbcType="VARCHAR" property="pModuleName"/>
+    </resultMap>
+
+    <!--db2、oracle、mysql通用-->
+   <!-- 参数删除-->
+    <delete id="deleteById" parameterType="com.yihuisoft.maintenancebiz.entity.param.SystemParam">
+        delete from T_SYS_PARAM
+        where ID = #{id,jdbcType=DECIMAL}
+    </delete>
+
+    <!--参数修改-->
+    <update id="updateById" parameterType="com.yihuisoft.maintenancebiz.entity.param.SystemParam">
+        update T_SYS_PARAM
+        <set>
+            <if test="paramName != null">
+                PARAM_NAME = #{paramName,jdbcType=VARCHAR},
+            </if>
+            <if test="paramType != null">
+                PARAM_TYPE = #{paramType,jdbcType=VARCHAR},
+            </if>
+            <if test="paramValue != null">
+                PARAM_VALUE = #{paramValue,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                REMARK = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="pModuleName != null">
+                PMODULE_NAME= #{pModuleName,jdbcType=VARCHAR},
+            </if>
+            LAST_MOD = sysdate,
+        </set>
+        where ID = #{id,jdbcType=DECIMAL}
+    </update>
+
+    <!-- 列表查询 -->
+    <select id="list" parameterType="com.yihuisoft.common.vo.PagerVO" resultMap="BaseResultMap">
+        select * from T_SYS_PARAM
+        <where>
+            1=1
+            <if test="data!=null">
+                <if test="data.paramName!=null and data.paramName !=''">
+                    AND PARAM_NAME LIKE '%'||#{data.paramName}||'%'
+                </if>
+                <if test="data.paramType!=null and data.paramType !=''">
+                    AND PARAM_TYPE = #{data.paramType}
+                </if>
+                <if test="data.remark!=null and data.remark !=''">
+                    AND REMARK like '%'||#{data.remark}||'%'
+                </if>
+                <if test="data.pModuleName!=null and data.pModuleName !=''">
+                    AND PMODULE_NAME like '%'||#{data.pModuleName}||'%'
+                </if>
+            </if>
+        </where>
+    </select>
+
+    <select id="listAll" parameterType="com.yihuisoft.maintenancebiz.entity.param.SystemParam" resultMap="BaseResultMap">
+        select * from T_SYS_PARAM
+        <where>
+            1=1
+                <if test="paramName!=null and paramName !=''">
+                    AND PARAM_NAME LIKE '%'||#{paramName}||'%'
+                </if>
+                <if test="paramType!=null and paramType !=''">
+                    AND PARAM_TYPE = #{paramType}
+                </if>
+                <if test="remark!=null and remark !=''">
+                    AND REMARK like '%'||#{remark}||'%'
+                </if>
+                <if test="pModuleName!=null and pModuleName !=''">
+                    AND PMODULE_NAME like '%'||#{pModuleName}||'%'
+                </if>
+        </where>
+    </select>
+
+    <!--db2、oracle、mysql通用-->
+    <select id="get" parameterType="com.yihuisoft.maintenancebiz.entity.param.SystemParam" resultMap="BaseResultMap">
+        select * from T_SYS_PARAM
+        <where>
+            1=1
+            <if test="paramName!=null and paramName !=''">
+                 AND PARAM_NAME = #{paramName}
+            </if>
+
+            <if test="id != null">
+                AND ID = #{id}
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 参数的新增-->
+    <insert id="save" parameterType="com.yihuisoft.maintenancebiz.entity.param.SystemParam" databaseId="oracle">
+
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="BEFORE">
+            select SEQ_SYS_PARAM_ID.nextval AS id from DUAL
+        </selectKey>
+        insert into T_SYS_PARAM
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            ID,
+            <if test="paramName != null">
+                PARAM_NAME,
+            </if>
+            <if test="paramType != null">
+                PARAM_TYPE,
+            </if>
+            <if test="paramValue != null">
+                PARAM_VALUE,
+            </if>
+            <if test="remark != null">
+                REMARK,
+            </if>
+            <if test="pModuleName != null">
+                PMODULE_NAME,
+            </if>
+            LAST_MOD
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            ${id},
+            <if test="paramName != null">
+                #{paramName,jdbcType=VARCHAR},
+            </if>
+            <if test="paramType != null">
+                #{paramType,jdbcType=VARCHAR},
+            </if>
+            <if test="paramValue != null">
+                #{paramValue,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="pModuleName != null">
+                #{pModuleName,jdbcType=VARCHAR},
+            </if>
+            SYSDATE
+        </trim>
+    </insert>
+
+    <!--db2、oracle、mysql通用-->
+    <!--分页-->
+    <!--<select id="getSysParamList" parameterType="com.yihuisoft.common.dto.InDTO" resultMap="BaseResultMap">
+        select * from T_SYS_PARAM
+        <where>
+       1=1
+            <if test="data.paramName!=null and data.paramName !=''">
+                AND PARAM_NAME LIKE '%'||#{data.paramName}||'%'
+            </if>
+            <if test="data.paramType!=null and data.paramType !=''">
+                AND PARAM_TYPE = #{data.paramType}
+            </if>
+            <if test="data.remark!=null and data.remark !=''">
+                AND REMARK like '%'||#{data.remark}||'%'
+            </if>
+            <if test="data.pModuleName!=null and data.pModuleName !=''">
+                AND PMODULE_NAME like '%'||#{data.pModuleName}||'%'
+            </if>
+        </where>
+
+    </select>
+
+
+    &lt;!&ndash;db2、oracle、mysql通用&ndash;&gt;
+    <select id="getSysParamByItem" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select * from T_SYS_PARAM
+        <where>
+            <if test="paramName!=null and paramName !=''">
+                AND PARAM_NAME = #{paramName}
+            </if>
+            <if test="paramType!=null and paramType !=''">
+                AND PARAM_TYPE = #{paramType}
+            </if>
+            <if test="pModuleName!=null and pModuleName !=''">
+                AND PMODULE_NAME = #{pModuleName}
+            </if>
+        </where>
+    </select>
+
+
+    <select id="getParamvalueByParamName" parameterType="java.lang.String" resultType="java.util.Map">
+        select PARAM_VALUE from T_SYS_PARAM where PARAM_NAME=#{paramName}
+    </select>
+
+    &lt;!&ndash;db2、oracle、mysql通用&ndash;&gt;
+    <select id="checkParamName" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(ID) from T_SYS_PARAM
+        <where>
+            <if test="id!=null">
+                ID NOT IN (#{id}) AND
+            </if>
+             PARAM_NAME = #{paramName,jdbcType=VARCHAR}
+        </where>
+
+    </select>
+
+
+    &lt;!&ndash;db2、oracle、mysql通用&ndash;&gt;
+    <select id="getcheckParamName" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select * from T_SYS_PARAM
+        <where>
+            <if test="paramName!=null and paramName !=''">
+                AND PARAM_NAME = #{paramName}
+            </if>
+        </where>
+
+    </select>-->
+</mapper>

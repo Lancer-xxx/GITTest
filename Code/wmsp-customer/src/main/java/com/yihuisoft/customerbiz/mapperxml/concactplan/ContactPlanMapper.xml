@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yihuisoft.customerbiz.mapper.contactplan.ContactPlanMapper">
+    <resultMap id="BaseResultMap" type="com.yihuisoft.customerbiz.entity.contactplan.ContactPlan">
+        <id column="ID" jdbcType="DECIMAL" property="id"/>
+        <id column="customer_type" jdbcType="VARCHAR" property="customerType"/>
+        <id column="plan_time" jdbcType="DATE" property="planTime"/>
+        <id column="contact_time" jdbcType="DATE" property="contactTime"/>
+        <id column="contact_type" jdbcType="VARCHAR" property="contactType"/>
+        <id column="contact_objective" jdbcType="VARCHAR" property="contactObjective"/>
+        <id column="plan_status" jdbcType="VARCHAR" property="planStatus"/>
+        <id column="customer_name" jdbcType="VARCHAR" property="customerName"/>
+        <id column="phone" jdbcType="VARCHAR" property="phone"/>
+        <id column="contact_resource_id" jdbcType="DECIMAL" property="contactResourceId"/>
+        <id column="remark" jdbcType="VARCHAR" property="remark"/>
+    </resultMap>
+
+    <resultMap id="ContactPlanAggregationResult" type="com.yihuisoft.customerbiz.dto.contactplan.ContactPlanAggregationDTO">
+        <id column="contact_resource_id" jdbcType="DECIMAL" property="contactResourceId"/>
+        <id column="plan_time" jdbcType="DATE" property="planTime"/>
+        <id column="contact_time" jdbcType="DATE" property="contactTime"/>
+        <id column="unexecute_plan_num" jdbcType="DECIMAL" property="unexecutePlanNum"/>
+        <id column="if_plan_non_execution" jdbcType="VARCHAR" property="ifPlanNonExecution"/>
+        <id column="contact_type" jdbcType="VARCHAR" property="contactType"/>
+
+    </resultMap>
+
+    <select id="listByDTO" parameterType="com.yihuisoft.customerbiz.dto.contactplan.ContactPlanListDTO" resultMap="BaseResultMap">
+        select p.* from T_CUST_CONTACT_PLAN  p left join T_CUST_CONTACT_PLAN_OWNERSHIP o on p.id = o.contact_Plan_id
+        <where>
+            o.id is not null
+            <if test = "customerId != null and customerId != ''">
+                AND p.contact_resource_id like '%'||#{customerId}||'%'
+            </if>
+            <if test = "customerName != null and customerId != ''">
+                AND p.customer_name like '%'||#{customerName}||'%'
+            </if>
+            <if test = "salesLeadId != null and salesLeadId != ''">
+                AND p.contact_resource_id like '%'||#{salesLeadId}||'%'
+            </if>
+            <if test="planTimeStart != null">
+                AND  cast(plan_time as Date) &gt;= #{planTimeStart}
+            </if>
+            <if test="planTimeEnd != null">
+                AND   #{planTimeEnd} &gt; cast(plan_time as Date)
+            </if>
+            <if test="contactTimeStart != null">
+                AND  cast(contact_time as Date) &gt;= #{planTimeStart}
+            </if>
+            <if test="contactTimeEnd != null">
+                AND   #{planTimeEnd} &gt; cast(contact_time as Date)
+            </if>
+            <if test = "contactObjective != null and contactObjective != ''">
+                AND p.contact_objective like '%'||#{contactObjective}||'%'
+            </if>
+            <if test = "customerType != null and customerType != ''">
+                AND p.customer_type like '%'||#{customerType}||'%'
+            </if>
+            <if test = "planStatus != null and planStatus != ''">
+                AND p.plan_status like '%'||#{planStatus}||'%'
+            </if>
+
+            <if test = 'userId != null and userId != ""'>
+                AND #{userId} = p.owner_user_id
+                AND #{userId} = o.customer_owner_id
+            </if>
+
+            <if test = 'orderColumn != null and orderColumn == "planTime" '>
+                order by plan_time
+                <if test = 'orderAsc != null and orderAsc == "desc"'>
+                    desc
+                </if>
+            </if>
+
+            <if test = 'orderColumn != null and orderColumn == "callTime" '>
+                order by call_time
+                <if test = 'orderAsc != null and orderAsc == "desc"'>
+                    desc
+                </if>
+            </if>
+
+
+        </where>
+    </select>
+
+
+    <select id="getContactInfo" parameterType="com.yihuisoft.customerbiz.dto.contactplan.ContactPlanAggregationDTO" resultMap="ContactPlanAggregationResult">
+        select contact_resource_id,customer_type,max(contact_time) as contact_time,max(plan_time) as plan_time,
+        count(1) as unexecute_plan_num,
+        (case  when count(1) &gt; 0 then 1 else 0 end) as if_plan_non_execution from T_CUST_CONTACT_PLAN
+        where contact_resource_id = #{contactResourceId} and
+        plan_status != '${@com.yihuisoft.customerbiz.constant.contactplan.ContactPlanConstant@STATUS_CANCELED}'
+        group by contact_resource_id,customer_type
+    </select>
+
+
+    <select id="getContactsInfo" parameterType="com.yihuisoft.customerbiz.dto.contactplan.BatchContactPlanDTO" resultMap="ContactPlanAggregationResult">
+        select contact_resource_id,customer_type,max(contact_time) as contact_time,max(plan_time) as plan_time,
+        count(1) as unexecute_plan_num,
+        (case  when count(1)  &gt; 0 then 1 else 0 end) as if_plan_non_execution from T_CUST_CONTACT_PLAN
+        where id IN
+        <foreach collection="idSet" item="contactPlanId" index="index" open="(" close=")" separator=",">
+            #{contactPlanId}
+        </foreach>
+        and plan_status != '${@com.yihuisoft.customerbiz.constant.contactplan.ContactPlanConstant@STATUS_CANCELED}'
+        group by contact_resource_id,customer_type
+    </select>
+
+
+</mapper>

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yihuisoft.logbiz.mapper.log.SysLogMapper">
+    <resultMap id="BaseResultMap" type="com.yihuisoft.logbiz.entity.log.SysLog">
+        <id column="EXCEP_CODE" jdbcType="VARCHAR" property="excepCode"/>
+        <result column="ID" jdbcType="DECIMAL" property="id"/>
+        <result column="USER_ID" jdbcType="VARCHAR" property="userId"/>
+        <result column="OPERATION" jdbcType="VARCHAR" property="operation"/>
+        <result column="REQ_IP" jdbcType="VARCHAR" property="reqIp"/>
+        <result column="REQ_TIME" jdbcType="TIMESTAMP" property="reqTime"/>
+        <result column="METHOD" jdbcType="VARCHAR" property="method"/>
+        <result column="PARAMS" jdbcType="VARCHAR" property="params"/>
+        <result column="EXCEP_DETAIL" jdbcType="CLOB" property="excepDetail"/>
+        <result column="STATUS" jdbcType="VARCHAR" property="status"/>
+        <result column="BUSITYPE" jdbcType="VARCHAR" property="busiType"/>
+        <result column="CLSS" jdbcType="VARCHAR" property="clss"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    EXCEP_CODE, ID, USER_ID, OPERATION, REQ_IP, to_char(REQ_TIME,'yyyy-MM-dd HH24:mi:ss') REQ_TIME, METHOD, PARAMS, EXCEP_DETAIL,
+    STATUS,BUSITYPE,CLSS
+  </sql>
+
+    <!--db2、oracle、mysql通用-->
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from T_SYS_LOG
+        where EXCEP_CODE = #{excepCode,jdbcType=VARCHAR}
+    </select>
+
+    <!--db2、oracle、mysql通用-->
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+      delete from T_SYS_LOG
+      where EXCEP_CODE = #{excepCode,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insertSelective" parameterType="com.yihuisoft.logbiz.entity.log.SysLog" useGeneratedKeys="true" keyProperty="id" databaseId="oracle">
+        insert into T_SYS_LOG
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="BEFORE">
+            select SEQ_SYS_LOG_ID.Nextval as id from DUAL
+        </selectKey>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="excepCode != null and excepCode != '' ">
+                EXCEP_CODE,
+            </if>
+            ID,
+            <if test="userId != null and userId != '' ">
+                USER_ID,
+            </if>
+            <if test="operation != null and operation != '' ">
+                OPERATION,
+            </if>
+            <if test="reqIp != null and reqIp != '' ">
+                REQ_IP,
+            </if>
+            <if test="reqTime != null">
+                REQ_TIME,
+            </if>
+            <if test="clss != null and clss != '' ">
+                CLSS,
+            </if>
+            <if test="method != null and method != '' ">
+                METHOD,
+            </if>
+            <if test="params != null and params != '' ">
+                PARAMS,
+            </if>
+            <if test="excepDetail != null and excepDetail != '' ">
+                EXCEP_DETAIL,
+            </if>
+                STATUS,
+            <if test="busiType != null and busiType != '' ">
+                BUSITYPE,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="excepCode != null and excepCode != '' ">
+                #{excepCode,jdbcType=VARCHAR},
+            </if>
+            ${id},
+            <if test="userId != null and userId != '' ">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="operation != null and operation != '' ">
+                #{operation,jdbcType=VARCHAR},
+            </if>
+            <if test="reqIp != null and reqIp != '' ">
+                #{reqIp,jdbcType=VARCHAR},
+            </if>
+            <if test="reqTime != null">
+                sysdate,
+            </if>
+            <if test="clss != null and clss != '' ">
+                #{clss,jdbcType=VARCHAR},
+            </if>
+            <if test="method != null and method != '' ">
+                #{method,jdbcType=VARCHAR},
+            </if>
+            <if test="params != null and params != '' ">
+                #{params,jdbcType=VARCHAR},
+            </if>
+            <if test="excepDetail != null and excepDetail != '' ">
+                #{excepDetail,jdbcType=CLOB},
+            </if>
+            <if test="excepCode == 'ERRORCODE0000' ">
+                1,
+            </if>
+            <if test="excepCode != 'ERRORCODE0000' ">
+                2,
+            </if>
+            <if test="busiType != null and busiType != '' ">
+                #{busiType,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+
+    <!--db2、oracle、mysql通用-->
+    <update id="updateByPrimaryKeySelective" parameterType="com.yihuisoft.logbiz.entity.log.SysLog">
+        update T_SYS_LOG
+        <set>
+            <if test="id != null and id != '' ">
+                ID = #{id,jdbcType=DECIMAL},
+            </if>
+            <if test="userId != null and userId != '' ">
+                USER_ID = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="operation != null and operation != '' ">
+                OPERATION = #{operation,jdbcType=VARCHAR},
+            </if>
+            <if test="reqIp != null and reqIp != '' ">
+                REQ_IP = #{reqIp,jdbcType=VARCHAR},
+            </if>
+            <if test="reqTime != null and reqTime != '' ">
+                REQ_TIME = #{reqTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="clss != null and clss != '' ">
+                CLSS = #{clss,jdbcType=VARCHAR},
+            </if>
+            <if test="method != null and method != '' ">
+                METHOD = #{method,jdbcType=VARCHAR},
+            </if>
+            <if test="params != null and params != '' ">
+                PARAMS = #{params,jdbcType=VARCHAR},
+            </if>
+            <if test="excepDetail != null and excepDetail != '' ">
+                EXCEP_DETAIL = #{excepDetail,jdbcType=CLOB},
+            </if>
+            <if test="status != null and status != '' ">
+                STATUS = #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="busiType != null and busiType != '' ">
+                BUSITYPE = #{busiType,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where EXCEP_CODE = #{excepCode,jdbcType=VARCHAR}
+    </update>
+
+    <select id="getSysLogList" parameterType="java.util.Map" resultMap="BaseResultMap" databaseId="oracle">
+        select <include refid="Base_Column_List" />  from T_SYS_LOG
+        <where>
+            <if test="reqIp != null and reqIp != ''">
+                AND REQ_IP = #{reqIp}
+            </if>
+            <if test="operation != null and operation != ''">
+                AND OPERATION like '%'||#{operation}||'%'
+            </if>
+            <if test="startTime != null and startTime != ''">
+                and REQ_TIME &gt;= to_date(#{startTime},'yyyy-MM-dd')
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and REQ_TIME &lt;= to_date(#{endTime},'yyyy-MM-dd')+1
+            </if>
+            <if test="status != null and status != ''">
+                AND STATUS = #{status}
+            </if>
+        </where>
+        order by REQ_TIME desc
+    </select>
+</mapper>

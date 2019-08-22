@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yihuisoft.customerbiz.mapper.saleslead.SalesLeadMapper">
+    <resultMap id="BaseResultMap" type="com.yihuisoft.customerbiz.entity.SalesLead">
+        <id column="ID" jdbcType="DECIMAL" property="id"/>
+        <id column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <id column="id_type" jdbcType="VARCHAR" property="idType"/>
+        <id column="id_number" jdbcType="VARCHAR" property="idNumber"/>
+        <id column="gender" jdbcType="DECIMAL" property="gender"/>
+        <id column="nation_code" jdbcType="VARCHAR" property="nationCode"/>
+        <id column="nation" jdbcType="VARCHAR" property="nation"/>
+        <id column="people_code" jdbcType="VARCHAR" property="peopleCode"/>
+        <id column="people" jdbcType="VARCHAR" property="people"/>
+        <id column="address" jdbcType="VARCHAR" property="address"/>
+        <id column="address_province_code" jdbcType="VARCHAR" property="addressProvinceCode"/>
+        <id column="address_province" jdbcType="VARCHAR" property="addressProvince"/>
+        <id column="address_city_code" jdbcType="VARCHAR" property="addressCityCode"/>
+        <id column="address_city" jdbcType="VARCHAR" property="addressCity"/>
+        <id column="address_district_code" jdbcType="VARCHAR" property="addressDistrictCode"/>
+        <id column="address_district" jdbcType="VARCHAR" property="addressDistrict"/>
+        <id column="phone" jdbcType="VARCHAR" property="phone"/>
+        <id column="residence_address" jdbcType="VARCHAR" property="residenceAddress"/>
+        <id column="residence_province_code" jdbcType="VARCHAR" property="residenceProvinceCode"/>
+        <id column="residence_province" jdbcType="VARCHAR" property="residenceProvince"/>
+        <id column="residence_city_code" jdbcType="VARCHAR" property="residenceCityCode"/>
+        <id column="residence_city" jdbcType="VARCHAR" property="residenceCity"/>
+        <id column="residence_district_code" jdbcType="VARCHAR" property="residenceDistrictCode"/>
+        <id column="residence_district" jdbcType="VARCHAR" property="residenceDistrict"/>
+        <id column="education" jdbcType="VARCHAR" property="education"/>
+        <id column="marriage" jdbcType="VARCHAR" property="marriage"/>
+        <id column="fertility_status" jdbcType="DECIMAL" property="fertilityStatus"/>
+        <id column="profession" jdbcType="VARCHAR" property="profession"/>
+        <id column="industry" jdbcType="VARCHAR" property="industry"/>
+        <id column="income_yearly" jdbcType="VARCHAR" property="incomeYearly"/>
+        <id column="has_car" jdbcType="VARCHAR" property="hasCar"/>
+        <id column="has_house" jdbcType="VARCHAR" property="hasHouse"/>
+        <id column="customer_manager" jdbcType="VARCHAR" property="customerManager"/>
+        <id column="customer_manager_work_no" jdbcType="VARCHAR" property="customerManagerWorkNo"/>
+        <id column="owner_organization_name" jdbcType="VARCHAR" property="ownerOrganizationName"/>
+        <id column="owner_organization_code" jdbcType="VARCHAR" property="ownerOrganizationCode"/>
+        <id column="create_time" jdbcType="DATE" property="createTime" javaType="java.util.Date"/>
+        <id column="creator_user_id" jdbcType="VARCHAR" property="creatorUserId"/>
+        <id column="update_user_id" jdbcType="VARCHAR" property="updateUserId"/>
+        <id column="update_time" jdbcType="DATE" property="updateTime"  javaType="java.util.Date"/>
+        <id column="remark" jdbcType="VARCHAR" property="remark"/>
+        <id column="assign_status" jdbcType="DECIMAL" property="assignStatus"/>
+        <id column="sale_status" jdbcType="DECIMAL" property="saleStatus"/>
+        <id column="linked_customer_no" jdbcType="VARCHAR" property="linkedCustomerNo"/>
+    </resultMap>
+
+    <resultMap id="BaseResultMap2Detail" type="com.yihuisoft.customerbiz.dto.saleslead.SalesLeadDetailDTO">
+        <id column="ID" jdbcType="DECIMAL" property="id"/>
+        <id column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <id column="id_type" jdbcType="VARCHAR" property="idType"/>
+        <id column="id_number" jdbcType="VARCHAR" property="idNumber"/>
+        <id column="gender" jdbcType="DECIMAL" property="gender"/>
+        <id column="nation" jdbcType="VARCHAR" property="nation"/>
+        <id column="people" jdbcType="VARCHAR" property="people"/>
+        <id column="address" jdbcType="VARCHAR" property="address"/>
+        <id column="phone" jdbcType="VARCHAR" property="phone"/>
+        <id column="residence_address" jdbcType="VARCHAR" property="residenceAddress"/>
+        <id column="education" jdbcType="VARCHAR" property="education"/>
+        <id column="marriage" jdbcType="VARCHAR" property="marriage"/>
+        <id column="fertility_status" jdbcType="DECIMAL" property="fertilityStatus"/>
+        <id column="profession" jdbcType="VARCHAR" property="profession"/>
+        <id column="industry" jdbcType="VARCHAR" property="industry"/>
+        <id column="income_yearly" jdbcType="VARCHAR" property="incomeYearly"/>
+        <id column="has_car" jdbcType="VARCHAR" property="hasCar"/>
+        <id column="has_house" jdbcType="VARCHAR" property="hasHouse"/>
+        <id column="customer_manager" jdbcType="VARCHAR" property="customerManager"/>
+        <id column="customer_manager_work_no" jdbcType="VARCHAR" property="customerManagerWorkNo"/>
+        <id column="owner_organization_name" jdbcType="VARCHAR" property="ownerOrganizationName"/>
+        <id column="owner_organization_code" jdbcType="VARCHAR" property="ownerOrganizationCode"/>
+        <id column="create_time" jdbcType="DATE" property="createTime" javaType="java.util.Date"/>
+        <id column="creator_user_id" jdbcType="VARCHAR" property="updateUserId"/>
+        <id column="update_user_id" jdbcType="VARCHAR" property="updateUserId"/>
+        <id column="update_time" jdbcType="DATE" property="updateTime"  javaType="java.util.Date"/>
+        <id column="remark" jdbcType="VARCHAR" property="remark"/>
+        <id column="assign_status" jdbcType="VARCHAR" property="assignStatus"/>
+        <id column="sale_status" jdbcType="VARCHAR" property="saleStatus"/>
+        <id column="linked_customer_no" jdbcType="VARCHAR" property="linkedCustomerNo"/>
+        <id column="customerManagerId" jdbcType="VARCHAR" property="customerManagerId"/>
+        <id column="organizationId" jdbcType="VARCHAR" property="ownerOrganizationId"/>
+        <id column="LAST_CONTACT_TIME" jdbcType="VARCHAR" property="lastContactTime"/>
+        <id column="PLANED_CONTACT_TIME" jdbcType="VARCHAR" property="planedContactTime"/>
+    </resultMap>
+
+    <select id="listByDTO" parameterType="com.yihuisoft.customerbiz.dto.saleslead.SalesLeadListDTO" resultMap="BaseResultMap2Detail">
+        select s.* , to_char(p.LAST_CONTACT_TIME,'YYYY-MM-DD HH24:MI') LAST_CONTACT_TIME,to_char(p.PLANED_CONTACT_TIME,'YYYY-MM-DD HH24:MI') PLANED_CONTACT_TIME
+        from T_CUST_SALES_LEAD s left join T_CUST_SALES_LEAD_OWNERSHIP o on s.id = o.sales_lead_id
+        left join T_CUST_SALES_LEAD_CONTACT p on s.id=p.CONTACT_RESOURCE_ID
+        <where>
+            1=1
+            <if test="userName!=null and userName!= ''">
+                AND user_name like '%'||#{userName}||'%'
+            </if>
+            <if test="phone!=null and phone!= ''">
+                AND phone like '%'||#{phone}||'%'
+            </if>
+            <if test='saleStatus!=null and saleStatus!= "" and saleStatus!= "0"'>
+                AND sale_status = #{saleStatus}
+            </if>
+            <if test='assignStatus!=null and assignStatus!= ""  and assignStatus!= "0"'>
+                AND assign_status = #{assignStatus}
+            </if>
+            <if test='createTimeStartTime != null and createTimeStartTime!="" '>
+                AND create_time &gt;= to_date(#{createTimeStartTime},'YYYY-MM-DD HH24:MI:SS')
+            </if>
+            <if test='createTimeEndTime != null and createTimeEndTime!=""'>
+                AND  to_date(#{createTimeEndTime},'YYYY-MM-DD HH24:MI:SS')+1 &gt; create_time
+            </if>
+            <if test="lastContactStartTime!=null and lastContactStartTime!=''">
+                and to_date(#{lastContactStartTime},'YYYY-MM-DD HH24:MI:SS') &lt;= p.LAST_CONTACT_TIME
+            </if>
+            <if test="lastContactEndTime!=null and lastContactEndTime!=''">
+                and p.LAST_CONTACT_TIME &lt; to_date(#{lastContactEndTime},'YYYY-MM-DD HH24:MI:SS')
+            </if>
+            <if test='isUnExecutePlan == "1"'>
+                and p.UNEXECUTE_PLAN_NUM &gt; 0
+            </if>
+            <if test='isUnExecutePlan == "0" '>
+                and (p.UNEXECUTE_PLAN_NUM =0 or p.UNEXECUTE_PLAN_NUM is null)
+            </if>
+            <if test="dataId== 1 and ownerOrganizationId != null and ownerOrganizationId!= ''">
+                AND  #{ownerUserId} = o.customer_manager_id and #{ownerOrganizationId} = o.organization_code
+            </if>
+            <if test="dataId== 1 and (ownerOrganizationId == null or ownerOrganizationId== '')">
+                AND  #{ownerUserId} = o.customer_manager_id
+            </if>
+            <if test="dataId== 2 and ownerOrganizationId != null and ownerOrganizationId!= ''">
+                AND  #{orgnCode} = o.organization_code and #{ownerOrganizationId} = o.organization_code
+            </if>
+            <if test="dataId== 2 and (ownerOrganizationId == null or ownerOrganizationId== '')">
+                AND  #{orgnCode} = o.organization_code
+            </if>
+            <if test="dataId== 3 and ownerOrganizationId != null and ownerOrganizationId!= ''">
+                AND  o.organization_code in (SELECT ORGN_CODE FROM T_SYS_ORGAN WHERE
+                ORGN_INHERIT_SIGN LIKE #{orgnInheritSign} ||'%')
+                AND  #{ownerOrganizationId} = o.organization_code
+            </if>
+            <if test="dataId== 3 and (ownerOrganizationId == null or ownerOrganizationId== '')">
+                AND  o.organization_code in (SELECT ORGN_CODE FROM T_SYS_ORGAN WHERE
+                ORGN_INHERIT_SIGN LIKE #{orgnInheritSign} ||'%')
+            </if>
+            <if test="dataId == 4 and ownerOrganizationId!=null and ownerOrganizationId!= ''">
+                AND  #{ownerOrganizationId} = o.organization_code
+            </if>
+        </where>
+        <choose>
+            <when test='orderType == ""'>
+                order by CREATE_TIME DESC NULLS last
+            </when>
+            <when test='orderType == "1"'>
+                order by p.LAST_CONTACT_TIME NULLS last
+            </when>
+            <when test='orderType == "2"'>
+                order by p.LAST_CONTACT_TIME DESC NULLS last
+            </when>
+            <when test='orderType == "3"'>
+                order by p.PLANED_CONTACT_TIME NULLS last
+            </when>
+            <when test='orderType == "4"'>
+                order by p.PLANED_CONTACT_TIME DESC NULLS last
+            </when>
+        </choose>
+    </select>
+
+    <select id="getDetail" parameterType="com.yihuisoft.customerbiz.dto.saleslead.SalesLeadDetailDTO" resultMap="BaseResultMap2Detail">
+        select  s.*,o.customerManagerId,o.organizationId from T_CUST_SALES_LEAD s left join T_CUST_SALES_LEAD_OWNERSHIP o on s.id = o.sales_lead_id
+        where 1=1
+        <if test="id!=null and id!= ''">
+            AND s.id = #{id}
+        </if>
+
+    </select>
+</mapper>

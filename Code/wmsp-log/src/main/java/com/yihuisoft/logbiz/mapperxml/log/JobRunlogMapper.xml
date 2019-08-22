@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yihuisoft.logbiz.mapper.log.JobRunlogMapper">
+    <resultMap id="BaseResultMap" type="com.yihuisoft.logbiz.entity.log.JobRunlog">
+        <id column="ID" jdbcType="DECIMAL" property="id"/>
+        <result column="GMT_CREATE" jdbcType="DATE" property="gmtCreate"/>
+        <result column="GMT_MODIFIED" jdbcType="DATE" property="gmtModified"/>
+        <result column="JOB_ID" jdbcType="DECIMAL" property="jobId"/>
+        <result column="JOB_DESC" jdbcType="VARCHAR" property="jobDesc"/>
+        <result column="RUN_DATE" jdbcType="VARCHAR" property="runDate"/>
+        <result column="RUN_TIMES" jdbcType="DECIMAL" property="runTimes"/>
+        <result column="RESULT_STATUS" jdbcType="DECIMAL" property="resultStatus"/>
+        <result column="MEMO" jdbcType="VARCHAR" property="memo"/>
+        <result column="END_TIME" jdbcType="DATE" property="endTime"/>
+        <result column="SERVICE_NAME" jdbcType="VARCHAR" property="serviceName"/>
+        <result column="MISTAKE_INFORM" jdbcType="VARCHAR" property="mistakeInform"/>
+        <result column="EXECUTE_ID" jdbcType="VARCHAR" property="executeId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    ID,to_char(GMT_CREATE,'yyyy/MM/dd HH:mm:ss') GMT_CREATE, to_char(GMT_MODIFIED,'yyyy/MM/dd HH:mm:ss') GMT_MODIFIED, JOB_ID, JOB_DESC,
+    to_char(RUN_DATE,'yyyy/MM/dd HH:mm:ss') RUN_DATE, RUN_TIMES, RESULT_STATUS,
+    MEMO,to_char(END_TIME,'yyyy/MM/dd HH:mm:ss') END_TIME,SERVICE_NAME,MISTAKE_INFORM,EXECUTE_ID
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_job_runlog
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_job_runlog
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insertSelective" parameterType="com.yihuisoft.logbiz.entity.log.JobRunlog">
+    insert into t_job_runlog ( gmt_create, gmt_modified,
+      job_id, job_desc, run_date, 
+      run_times, result_status, memo
+      )
+    values ( current_timestamp, current_timestamp,
+      seq_t_job_runlog.nextval, #{jobDesc,jdbcType=VARCHAR}, #{runDate,jdbcType=VARCHAR},
+      #{runTimes,jdbcType=INTEGER}, #{resultStatus,jdbcType=INTEGER}, #{memo,jdbcType=VARCHAR}
+      )
+  </insert>
+    <insert id="insert" parameterType="com.yihuisoft.logbiz.entity.log.JobRunlog" useGeneratedKeys="true" keyProperty="id" databaseId="oracle">
+        insert into t_job_runlog
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id !=''">
+                ID,
+            </if>
+            <if test="gmtCreate != null and gmtCreate != ''">
+                GMT_CREATE,
+            </if>
+            <if test="gmtModified != null and gmtModified != ''">
+                GMT_MODIFIED,
+            </if>
+            <if test="jobId != null and jobId != ''">
+                JOB_ID,
+            </if>
+            <if test="jobDesc != null and jobDesc != ''">
+                JOB_DESC,
+            </if>
+            <if test="runDate != null and runDate != ''">
+                RUN_DATE,
+            </if>
+            <if test="runTimes != null and runTimes != ''">
+                RUN_TIMES,
+            </if>
+            <if test="resultStatus != null">
+                RESULT_STATUS,
+            </if>
+            <if test="memo != null and memo != ''">
+                MEMO,
+            </if>
+            <if test="endTime != null and endTime != ''">
+                END_TIME,
+            </if>
+            <if test="serviceName != null and serviceName != ''">
+                SERVICE_NAME,
+            </if>
+            <if test="mistakeInform != null and mistakeInform != ''">
+                MISTAKE_INFORM,
+            </if>
+            <if test="executeId != null and executeId != ''">
+                EXECUTE_ID
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != ''">
+                #{id,jdbcType=DECIMAL},
+            </if>
+            <if test="gmtCreate != null and gmtCreate != ''">
+                TO_DATE(#{gmtCreate},'yyyy-MM-dd HH24:mi:ss'),
+            </if>
+            <if test="gmtModified != null and gmtModified != ''">
+                TO_DATE(#{gmtModified},'yyyy-MM-dd HH24:mi:ss'),
+            </if>
+            <if test="jobId != null and jobId != ''">
+                #{jobId,jdbcType=DECIMAL},
+            </if>
+            <if test="jobDesc != null and jobDesc != ''">
+                #{jobDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="runDate != null and runDate != ''">
+                TO_DATE(#{runDate},'yyyy-MM-dd HH24:mi:ss'),
+            </if>
+            <if test="runTimes != null and runTimes !=''">
+                #{runTimes,jdbcType=DECIMAL},
+            </if>
+            <if test="resultStatus != null">
+                #{resultStatus,jdbcType=DECIMAL},
+            </if>
+            <if test="memo != null and memo != ''">
+                #{memo,jdbcType=VARCHAR},
+            </if>
+            <if test="endTime != null and endTime != ''">
+                TO_DATE(#{endTime,jdbcType=VARCHAR},'yyyy-MM-dd HH24:mi:ss'),
+            </if>
+            <if test="serviceName != null and serviceName != ''">
+                #{serviceName,jdbcType=VARCHAR},
+            </if>
+            <if test="mistakeInform != null and mistakeInform != ''">
+                #{mistakeInform,jdbcType=VARCHAR},
+            </if>
+            <if test="executeId != null and executeId != ''">
+                #{executeId,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.yihuisoft.logbiz.entity.log.JobRunlog">
+        update t_job_runlog
+        <set>
+            <if test="gmtCreate != null and gmtCreate != ''">
+                gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gmtModified != null and gmtModified != ''">
+                gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="jobId != null and jobId != ''">
+                job_id = #{jobId,jdbcType=INTEGER},
+            </if>
+            <if test="jobDesc != null and jobDesc != ''">
+                job_desc = #{jobDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="runDate != null and runDate != ''">
+                run_date = #{runDate,jdbcType=VARCHAR},
+            </if>
+            <if test="runTimes != null and runTimes != ''">
+                run_times = #{runTimes,jdbcType=INTEGER},
+            </if>
+            <if test="resultStatus != null and resultStatus != ''">
+                result_status = #{resultStatus,jdbcType=INTEGER},
+            </if>
+            <if test="memo != null and memo != ''">
+                memo = #{memo,jdbcType=VARCHAR},
+            </if>
+            <if test="endTime != null and endTime != ''">
+                END_TIME= sysdate
+            </if>
+
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <select id="selectByJobIdAndRunDate" resultMap="BaseResultMap" parameterType="com.yihuisoft.logbiz.dto.job.JobRunlogFindDTO">
+        select
+        <include refid="Base_Column_List"/>
+        from T_JOB_RUNLOG
+        <where>
+            1=1
+            <if test="jobId != null ">
+                AND JOB_ID = #{jobId,jdbcType=DECIMAL}
+            </if>
+            <if test="serviceName!=null and serviceName!= ''">
+                AND SERVICE_NAME LIKE  '%'||#{serviceName}||'%'
+            </if>
+            <if test="resultStatus != null">
+                AND RESULT_STATUS = #{resultStatus,jdbcType=DECIMAL}
+            </if>
+            <if test="startTime !=null and startTime !=''">
+                AND to_date(#{startTime}, 'yyyy/MM/dd') &lt;= END_TIME
+            </if>
+            <if test="endTime !=null and endTime !=''">
+                AND END_TIME &lt;= to_date(#{endTime}, 'yyyy/MM/dd')
+            </if>
+
+        </where>
+    </select>
+
+    <!-- 列表查询-->
+    <sql id="sql_selectJobLogList_where">
+        <where>1=1
+            <if test="jobId != null and jobId != '' ">
+                and tjr.job_id like '%${jobId}%'
+            </if>
+            <if test="resultStatus != null and resultStatus != '' ">
+                and tjr.result_status = #{resultStatus,jdbcType=INTEGER}
+            </if>
+            <if test="runDate != null and runDate != '' ">
+                <![CDATA[ and DATE_FORMAT(tjr.run_date,'%Y%m%d') = DATE_FORMAT(#{runDate,jdbcType=VARCHAR},'%Y%m%d')]]>
+            </if>
+            <if test="startDate != null and startDate != '' ">
+                <![CDATA[ and DATE_FORMAT(tjr.run_date,'%Y%m%d') >= DATE_FORMAT(#{startDate,jdbcType=VARCHAR},'%Y%m%d')]]>
+            </if>
+            <if test="endDate != null and endDate != '' ">
+                <![CDATA[ and DATE_FORMAT(tjr.run_date,'%Y%m%d') <= DATE_FORMAT(#{endDate,jdbcType=VARCHAR},'%Y%m%d')]]>
+            </if>
+            <if test="createStartDate != null and createStartDate != '' ">
+                <![CDATA[ and DATE_FORMAT(tjr.gmt_create,'%Y%m%d') >= DATE_FORMAT(#{createStartDate,jdbcType=VARCHAR},'%Y%m%d')]]>
+            </if>
+            <if test="createEndDate != null and createEndDate != '' ">
+                <![CDATA[ and DATE_FORMAT(tjr.gmt_create,'%Y%m%d') <= DATE_FORMAT(#{createEndDate,jdbcType=VARCHAR},'%Y%m%d')]]>
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectJobLogListCount" resultType="int" parameterType="java.util.Map">
+        select count(0)
+        from t_job_runlog tjr
+        <include refid="sql_selectJobLogList_where"/>
+    </select>
+
+    <select id="selectJobLogList" resultType="com.yihuisoft.logbiz.entity.log.JobRunlog"
+            parameterType="com.yihuisoft.common.dto.InDTO">
+        select id,to_char(gmt_create,'yyyy/MM/dd HH:mm:ss') gmt_create, to_char(gmt_modified,'yyyy/MM/dd HH:mm:ss')
+        gmt_modified, job_id, job_desc, to_char(run_date,'yyyy/MM/dd HH:mm:ss') run_date, run_times, result_status,
+        memo,to_char(end_Time,'yyyy/MM/dd HH:mm:ss') endTime
+        from T_JOB_RUNLOG tjr
+        <where>
+            <if test="data.jobId != null and data.jobId != ''">
+                ID=#{data.jobId,jdbcType=INTEGER}
+            </if>
+            <if test="data.resultStatus != null and data.resultStatus != ''">
+                and RESULT_STATUS = #{data.resultStatus,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by tjr.id DESC
+    </select>
+
+
+
+    <select id="queryList" resultMap="BaseResultMap"
+            parameterType="com.yihuisoft.logbiz.entity.log.JobRunlog">
+        select <include refid="Base_Column_List" />
+        from T_JOB_RUNLOG tjr
+        <where>
+            <if test="gmtCreate != null and gmtCreate != ''">
+                GMT_CREATE=#{jobId,jdbcType=TIMESTAMP}
+            </if>
+            <if test="gmtModified != null and gmtModified != ''">
+                GMT_MODIFIED=#{jobId,jdbcType=TIMESTAMP}
+            </if>
+            <if test="jobId != null and jobId != ''">
+                JOB_ID=#{jobId,jdbcType=INTEGER}
+            </if>
+            <if test="jobDesc != null and jobDesc != ''">
+                JOB_DESC=#{jobId,jdbcType=VARCHAR}
+            </if>
+            <if test="runDate != null and runDate != ''">
+                RUN_DATE=#{jobId,jdbcType=VARCHAR}
+            </if>
+            <if test="runTimes != null and runTimes != ''">
+                RUN_TIMES=#{jobId,jdbcType=INTEGER}
+            </if>
+            <if test="resultStatus != null and resultStatus != ''">
+                RESULT_STATUS=#{jobId,jdbcType=INTEGER}
+            </if>
+            <if test="memo != null and memo != ''">
+                MEMO=#{jobId,jdbcType=VARCHAR}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                END_TIME=#{jobId,jdbcType=TIMESTAMP}
+            </if>
+
+        </where>
+    </select>
+
+
+</mapper>

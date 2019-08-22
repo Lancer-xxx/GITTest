@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yihuisoft.customerbiz.mapper.custinfo.CustInfomationMapper">
+  <resultMap id="BaseResultMap" type="com.yihuisoft.customerbiz.entity.custinfo.CustBaseInfomation">
+    <id column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="CIS" jdbcType="VARCHAR" property="cis" />
+    <result column="CUST_NAME" jdbcType="VARCHAR" property="custName" />
+    <result column="GENDER" jdbcType="CHAR" property="gender" />
+    <result column="AGE" jdbcType="VARCHAR" property="age" />
+    <result column="MOBILE_NUMBER" jdbcType="VARCHAR" property="mobileNumber" />
+    <result column="CARD_TYPE" jdbcType="VARCHAR" property="cardType" />
+    <result column="CERTIFICATE_NUMBER" jdbcType="VARCHAR" property="certificateNumber" />
+    <result column="POSITION" jdbcType="VARCHAR" property="position" />
+    <result column="CUSTOMER_LEVEL" jdbcType="VARCHAR" property="customerLevel" />
+    <result column="CRM_MANGAGER_CODE" jdbcType="VARCHAR" property="crmMangagerCode" />
+    <result column="CRM_ORGN_CODE" jdbcType="VARCHAR" property="crmOrgnCode" />
+    <result column="LAST_CALL_TIME" jdbcType="TIMESTAMP" property="lastCallTime" />
+    <result column="LATEST_CALL_TIME" jdbcType="TIMESTAMP" property="latestCallTime" />
+    <result column="IF_PLAN_NON_EXECUTION" jdbcType="CHAR" property="ifPlanNonExecution" />
+    <result column="BIRTHDAY" jdbcType="VARCHAR" property="birthday" />
+    <result column="ASSET_SIZE" jdbcType="DECIMAL" property="assetSize" />
+    <result column="DEBT_SIZE" jdbcType="DECIMAL" property="debtSize" />
+    <result column="ANNUAL_AVERAGE_ASSETS" jdbcType="DECIMAL" property="annualAverageAssets" />
+    <result column="ANNUAL_INCOME" jdbcType="DECIMAL" property="annualIncome" />
+    <result column="OPENING_INSTITUTION_CODE" jdbcType="VARCHAR" property="openingInstitutionCode" />
+    <result column="OPENING_INSTITUTION_NAME" jdbcType="VARCHAR" property="openingInstitutionName" />
+    <result column="OPENING_CARD" jdbcType="VARCHAR" property="openingCard" />
+    <result column="OPENING_TIME" jdbcType="TIMESTAMP" property="openingTime" />
+    <result column="UPDATE_USERID" jdbcType="DECIMAL" property="updateUserid" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="CRM_UPDATE_TIME" jdbcType="TIMESTAMP" property="crmUpdateTime" />
+    <result column="CREATE_USERID" jdbcType="DECIMAL" property="createUserid" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+
+  <resultMap id="CustAllInfoResultMap" type="com.yihuisoft.customerbiz.entity.custinfo.CustInfomation" extends="BaseResultMap">
+    <result column="USER_ID" jdbcType="DECIMAL" property="userId" />
+    <result column="MANAGER_CODE" jdbcType="VARCHAR" property="managerCode" />
+    <result column="MANAGER_NAME" jdbcType="VARCHAR" property="managerName" />
+    <result column="OWNED_ORGN_CODE" jdbcType="VARCHAR" property="ownedOrgnCode" />
+    <result column="SUP_ORGN_CODE" jdbcType="VARCHAR" property="supOrgnCode" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    ID, CIS, CUST_NAME, GENDER, AGE, MOBILE_NUMBER, CARD_TYPE, CERTIFICATE_NUMBER, POSITION, 
+    CUSTOMER_LEVEL, CRM_MANGAGER_CODE, CRM_ORGN_CODE, LAST_CALL_TIME, LATEST_CALL_TIME, 
+    IF_PLAN_NON_EXECUTION, BIRTHDAY, ASSET_SIZE, DEBT_SIZE, ANNUAL_AVERAGE_ASSETS, ANNUAL_INCOME, 
+    OPENING_INSTITUTION_CODE, OPENING_INSTITUTION_NAME, OPENING_CARD, OPENING_TIME, UPDATE_USERID, 
+    UPDATE_TIME, CRM_UPDATE_TIME, CREATE_USERID, CREATE_TIME
+  </sql>
+  <sql id="CustInfoColumns">
+    A.ID, A.CIS, A.CUST_NAME, A.GENDER, A.AGE, A.MOBILE_NUMBER, A.CARD_TYPE, A.CERTIFICATE_NUMBER, A.POSITION,
+    A.CUSTOMER_LEVEL, A.LAST_CALL_TIME, A.LATEST_CALL_TIME,
+    A.IF_PLAN_NON_EXECUTION, A.BIRTHDAY, A.ASSET_SIZE, DEBT_SIZE, A.ANNUAL_AVERAGE_ASSETS, A.ANNUAL_INCOME,
+    A.OPENING_INSTITUTION_CODE, A.OPENING_INSTITUTION_NAME, A.OPENING_CARD, A.OPENING_TIME, A.UPDATE_USERID,
+    A.UPDATE_TIME, A.CRM_UPDATE_TIME
+  </sql>
+  <select  id="list" parameterType="map" resultMap="CustAllInfoResultMap">
+    select
+    <include refid="CustInfoColumns" />,B.USER_ID,B.MANAGER_CODE,B.MANAGER_NAME,B.OWNED_ORGN_CODE,B.SUP_ORGN_CODE
+    from T_CUST_INFO A
+      JOIN T_CUST_RELATION B ON A.ID = B.CUST_ID
+      JOIN T_SYS_USER_INFO C ON B.USER_ID = C.ID
+    WHERE 1=1
+      <if test="custInfoMap.dataAuth.toString() == authInfoMap.typeFirst_oneself">
+        AND B.USER_ID = #{custInfoMap.userId,jdbcType=DECIMAL}
+      </if>
+      <if test="custInfoMap.dataAuth.toString() == authInfoMap.typeFirst_currentOrgn">
+        AND C.ORGN_ID = #{custInfoMap.loginOrgnId,jdbcType=DECIMAL}
+      </if>
+      <if test="custInfoMap.dataAuth.toString() == authInfoMap.typeFirst_allSubordinatesOfOrgn">
+        AND C.ORGN_ID  IN (SELECT ID FROM T_SYS_ORGAN  WHERE ORGN_INHERIT_SIGN LIKE #{custInfoMap.orgnInheritSign}||'%')
+      </if>
+
+      <if test="custInfoMap.cis!=null and custInfoMap.cis!= ''">
+        AND A.CIS = #{custInfoMap.cis,jdbcType=VARCHAR}
+      </if>
+      <if test="custInfoMap.custName!=null and custInfoMap.custName!= ''">
+        AND A.CUST_NAME LIKE  '%'||#{custInfoMap.custName}||'%'
+      </if>
+      <if test="custInfoMap.mobileNumber!=null and custInfoMap.mobileNumber!= ''">
+        AND A.MOBILE_NUMBER LIKE  '%'||#{custInfoMap.mobileNumber,jdbcType=VARCHAR}||'%'
+      </if>
+      <if test="custInfoMap.certificateNumber!=null and custInfoMap.certificateNumber!= ''">
+        AND A.CERTIFICATE_NUMBER = #{custInfoMap.certificateNumber,jdbcType=VARCHAR}
+      </if>
+      <if test="custInfoMap.managerName!=null and custInfoMap.managerName!= ''">
+        AND C.USER_NAME LIKE  '%'||#{custInfoMap.managerName}||'%'
+      </if>
+      <if test="custInfoMap.ifPlanNonExecution!=null and custInfoMap.ifPlanNonExecution!= ''">
+        AND A.IF_PLAN_NON_EXECUTION = #{custInfoMap.ifPlanNonExecution,jdbcType=CHAR}
+      </if>
+
+      <if test="custInfoMap.ageStart!=null and custInfoMap.ageStart!= ''">
+        AND A.AGE &gt;= to_number(#{custInfoMap.ageStart,jdbcType=VARCHAR})
+      </if>
+      <if test="custInfoMap.ageEnd!=null and custInfoMap.ageEnd!= ''">
+        AND A.AGE &lt;= to_number(#{custInfoMap.ageEnd,jdbcType=VARCHAR})
+      </if>
+      <if test="custInfoMap.lastCallTimeStart!=null and custInfoMap.lastCallTimeStart!= ''">
+        AND A.LAST_CALL_TIME &gt;=  TO_DATE(#{custInfoMap.lastCallTimeStart,jdbcType=VARCHAR},'yyyy-MM-dd HH24:MI:SS')
+      </if>
+      <if test="custInfoMap.lastCallTimeEnd!=null and custInfoMap.lastCallTimeEnd!= ''">
+        AND A.LAST_CALL_TIME &lt;= TO_DATE(#{custInfoMap.lastCallTimeEnd,jdbcType=VARCHAR},'yyyy-MM-dd HH24:MI:SS')
+      </if>
+
+      <if test="custInfoMap.ownedOrgnCode!=null and custInfoMap.ownedOrgnCode!= ''">
+        AND C.ORGN_CODE = #{custInfoMap.ownedOrgnCode,jdbcType=VARCHAR}
+      </if>
+
+      <choose>
+        <when test="custInfoMap.listOrder.toString()=='0'.toString() or custInfoMap.listOrder.toString()=='6'.toString()">
+          ORDER BY A.AGE
+        </when>
+        <when test="custInfoMap.listOrder.toString()=='2'.toString()">
+        ORDER BY A.LAST_CALL_TIME
+        </when>
+        <when test="custInfoMap.listOrder.toString()=='3'.toString()">
+        ORDER BY A.LAST_CALL_TIME DESC
+        </when>
+        <when test="custInfoMap.listOrder.toString()=='4'.toString()">
+        ORDER BY A.LATEST_CALL_TIME
+        </when>
+        <when test="custInfoMap.listOrder.toString()=='5'.toString()">
+        ORDER BY A.LATEST_CALL_TIME DESC
+        </when>
+        <when test="custInfoMap.listOrder.toString()=='7'.toString()">
+          ORDER BY A.AGE DESC
+        </when>
+      </choose>
+  </select>
+
+  <update id="updateCallRecord" parameterType="com.yihuisoft.customerbiz.entity.custinfo.CustBaseInfomation">
+    update T_CUST_INFO
+    <set>
+
+      <if test="lastCallTime != null">
+        LAST_CALL_TIME = #{lastCallTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="latestCallTime != null">
+        LATEST_CALL_TIME = #{latestCallTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ifPlanNonExecution != null">
+        IF_PLAN_NON_EXECUTION = #{ifPlanNonExecution,jdbcType=CHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+
+
+
+</mapper>

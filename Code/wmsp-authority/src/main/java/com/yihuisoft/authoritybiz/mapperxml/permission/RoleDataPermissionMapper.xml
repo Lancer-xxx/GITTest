@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yihuisoft.authoritybiz.mapper.permission.RoleDataPermissionMapper">
+    <resultMap id="BaseResultMap" type="com.yihuisoft.authoritybiz.entity.permission.RoleDataPermission">
+        <id column="ID" jdbcType="DECIMAL" property="id" />
+        <result column="ROLE_ID" jdbcType="DECIMAL" property="roleId" />
+        <result column="DATA_ID" jdbcType="DECIMAL" property="dataId" />
+        <result column="IS_DELETED" jdbcType="VARCHAR" property="isDeleted" />
+        <result column="CREATE_USERID" jdbcType="DECIMAL" property="createUserId" />
+        <result column="CREATE_TIME" jdbcType="DATE" property="createTime" />
+        <result column="UPDATE_USERID" jdbcType="DECIMAL" property="updateUserId" />
+        <result column="UPDATE_TIME" jdbcType="DATE" property="updateTime" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        ID, ROLE_ID, DATA_ID, IS_DELETED, CREATE_USERID, CREATE_TIME,
+        UPDATE_USERID, UPDATE_TIME
+    </sql>
+
+    <insert id="saveRoleDataPersion">
+        insert into T_SYS_ROLE_DATA_PERSION
+        (ID, ROLE_ID, DATA_ID, CREATE_USERID, UPDATE_USERID, CREATE_TIME, UPDATE_TIME)
+        VALUES (#{id}, #{roleId,jdbcType=DECIMAL}, #{dataId,jdbcType=DECIMAL},
+        #{createUserId,jdbcType=DECIMAL}, #{updateUserId,jdbcType=DECIMAL}, sysdate, sysdate)
+    </insert>
+    <delete id="deleteByRoleId">
+        DELETE FROM T_SYS_ROLE_DATA_PERSION WHERE ROLE_ID = #{roleId}
+    </delete>
+
+    <select id="selectDataPersionByRoleId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM T_SYS_ROLE_DATA_PERSION WHERE ROLE_ID = #{roleId}
+    </select>
+
+    <select id="getDataPersion" parameterType="com.yihuisoft.authoritybiz.dto.permission.RoleDataPermissionSelectDTO" resultType="com.yihuisoft.authoritybiz.entity.permission.DataPermission">
+        SELECT
+            d.*
+        FROM
+            T_SYS_DATA_PERSSION d
+            LEFT JOIN T_SYS_ROLE_DATA_PERSION r ON r.DATA_ID = d.ID
+        WHERE
+         	r.ROLE_ID = #{roleId}
+            AND d.TYPE = #{type}
+            AND d.STATUS = 1
+            AND d.IS_DELETED = 0
+    </select>
+</mapper>
